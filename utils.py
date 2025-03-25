@@ -1,0 +1,173 @@
+from vllm import SamplingParams
+from tqdm import tqdm
+import re
+
+# Load and prep dataset
+SYSTEM_PROMPT = """
+Respond in the following format:
+<reasoning>
+...
+</reasoning>
+<answer>
+...
+</answer>
+"""
+
+XML_COT_FORMAT = """\
+<reasoning>
+{reasoning}
+</reasoning>
+<answer>
+{answer}
+</answer>
+"""
+
+def extract_xml_answer(text: str) -> str:
+    answer = text.split("<answer>")[-1]
+    answer = answer.split("</answer>")[0]
+    return answer.strip()
+
+def extract_hash_answer(text: str) -> str | None:
+    if "####" not in text:
+        return None
+    return text.split("####")[1].strip()
+
+# Reward functions
+def correctness_reward_func(prompts, completions, answer, **kwargs) -> list[float]:
+    responses = [completion[0]['content'] for completion in completions]
+    q = prompts[0][-1]['content']
+    extracted_responses = [extract_xml_answer(r) for r in responses]
+    print('-'*20, f"Question:\n{q}", f"\nAnswer:\n{answer[0]}", f"\nResponse:\n{responses[0]}", f"\nExtracted:\n{extracted_responses[0]}")
+    return [2.0 if r == a else 0.0 for r, a in zip(extracted_responses, answer)]
+
+def int_reward_func(completions, **kwargs) -> list[float]:
+    responses = [completion[0]['content'] for completion in completions]
+    extracted_responses = [extract_xml_answer(r) for r in responses]
+    return [0.5 if r.isdigit() else 0.0 for r in extracted_responses]
+
+def strict_format_reward_func(completions, **kwargs) -> list[float]:
+    """Reward function that checks if the completion has a specific format."""
+    pattern = r"^<reasoning>\n.*?\n</reasoning>\n<answer>\n.*?\n</answer>\n$"
+    responses = [completion[0]["content"] for completion in completions]
+    matches = [re.match(pattern, r) for r in responses]
+    return [0.5 if match else 0.0 for match in matches]
+
+def soft_format_reward_func(completions, **kwargs) -> list[float]:
+    """Reward function that checks if the completion has a specific format."""
+    pattern = r"<reasoning>.*?</reasoning>\s*<answer>.*?</answer>"
+    responses = [completion[0]["content"] for completion in completions]
+    matches = [re.match(pattern, r) for r in responses]
+    return [0.5 if match else 0.0 for match in matches]
+
+def count_xml(text) -> float:
+    count = 0.0
+    if text.count("<reasoning>\n") == 1:
+        count += 0.125
+    if text.count("\n</reasoning>\n") == 1:
+        count += 0.125
+    if text.count("\n<answer>\n") == 1:
+        count += 0.125
+        count -= len(text.split("\n</answer>\n")[-1])*0.001
+    if text.count("\n</answer>") == 1:
+        count += 0.125
+        count -= (len(text.split("\n</answer>")[-1]) - 1)*0.001
+    return count
+
+def xmlcount_reward_func(completions, **kwargs) -> list[float]:
+    contents = [completion[0]["content"] for completion in completions]
+    return [count_xml(c) for c in contents]
+
+
+# Evaluate on GSM8K test set
+
+def evaluate_model_on_gsm8k(model, test_data, tokenizer, lora_path=None):
+    correct = 0
+    total = 0
+    results = []
+    
+    # Configure sampling parameters
+    sampling_params = SamplingParams(
+        temperature=0.8,
+        top_p=0.95,
+        max_tokens=1024,
+    )
+    
+    # Load LoRA weights if provided
+    lora_request = None
+    if lora_path:
+        lora_request = model.load_lora(lora_path)
+    
+    # Process each question in the test set
+    for item in tqdm(test_data):
+        # Format the prompt
+        prompt = tokenizer.apply_chat_template([
+            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "user", "content": item['question']}
+        ], tokenize=False, add_generation_prompt=True)
+        
+        # Generate response
+        output = model.fast_generate(
+            [prompt],
+            sampling_params=sampling_params,
+            lora_request=lora_request
+        )[0].outputs[0].text
+        
+        # Extract and compare answer
+        try:
+            model_answer = extract_xml_answer(output)
+            ground_truth = item['answer']
+            
+            is_correct = model_answer == ground_truth
+            if is_correct:
+                correct += 1
+            
+            # Save detailed results
+            results.append({
+                'question': item['question'],
+                'ground_truth': ground_truth,
+                'model_answer': model_answer,
+                'full_response': output,
+                'is_correct': is_correct
+            })
+            
+        except Exception as e:
+            print(f"Error processing answer: {e}")
+            results.append({
+                'question': item['question'],
+                'ground_truth': item['answer'],
+                'model_answer': "ERROR",
+                'full_response': output,
+                'is_correct': False
+            })
+        
+        total += 1
+    
+    # Calculate accuracy
+    accuracy = correct / total if total > 0 else 0
+    print(f"GSM8K Test Accuracy: {accuracy:.4f} ({correct}/{total})")
+    
+    return {
+        'accuracy': accuracy,
+        'correct': correct,
+        'total': total,
+        'detailed_results': results
+    }
+
+def analyze_errors(results):
+    errors = [r for r in results['detailed_results'] if not r['is_correct']]
+    
+    # Check for common error patterns
+    numeric_but_wrong = 0
+    format_errors = 0
+    
+    for error in errors:
+        model_answer = error['model_answer']
+        if model_answer.isdigit() or (model_answer.replace('.', '', 1).isdigit() and model_answer.count('.') <= 1):
+            numeric_but_wrong += 1
+        if "<answer>" not in error['full_response'] or "<reasoning>" not in error['full_response']:
+            format_errors += 1
+    
+    print("\nError Analysis:")
+    print(f"Total errors: {len(errors)}")
+    print(f"Numeric but wrong: {numeric_but_wrong} ({numeric_but_wrong/len(errors)*100:.1f}%)")
+    print(f"Format errors: {format_errors} ({format_errors/len(errors)*100:.1f}%)")
