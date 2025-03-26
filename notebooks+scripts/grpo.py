@@ -18,21 +18,23 @@ import utils
 parser = argparse.ArgumentParser(description="GRPO training and evaluation script")
 parser.add_argument("--model", type=str, default="meta-llama/meta-Llama-3.1-8B-Instruct", 
                     help="Model to load for training or evaluation")
-parser.add_argument("--mode", type=str, choices=["train", "evaluate"], default="train",
-                    help="Mode to run the script in: train (also evaluates) or evaluate only")
+parser.add_argument("--mode", type=str, choices=["train", "evaluate", "continue"], default="train",
+                    help="Mode to run the script in: train (also evaluates), evaluate only, or continue training")
 parser.add_argument("--lora_name", type=str, help="Name of the LoRA adapter to save or load")
 parser.add_argument("--dataset", type=str, default="gsm8k",
                     help="Dataset to train or evaluate on (default: gsm8k)")
+parser.add_argument("--checkpoint_path", type=str, help="Path to checkpoint for continuing training")
 
 args = parser.parse_args()
 
-# Create logs directory if it doesn't exist
-os.makedirs("./logs", exist_ok=True)
-
-# Setup logging
+# Create timestamp for directories and filenames
 timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
 experiment_name = f"{args.dataset}_{args.model.split('/')[-1]}_{args.mode}_{timestamp}"
-log_file = f"./logs/{experiment_name}.log"
+output_dir = f"./logs/{timestamp}"
+os.makedirs(output_dir, exist_ok=True)
+
+# Setup logging to the output directory
+log_file = f"{output_dir}/{experiment_name}.log"
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
@@ -77,7 +79,7 @@ model = FastLanguageModel.get_peft_model(
 )
 logger.info("PEFT model configured")
 
-if args.mode == "train":
+if args.mode == "train" or args.mode == "continue":
     logger.info(f"Loading {args.dataset} training dataset")
     dataset = utils.get_dataset(args.dataset, "train")
     logger.info(f"Dataset loaded with {len(dataset)} examples")
@@ -103,7 +105,7 @@ if args.mode == "train":
         save_steps = 250,
         max_grad_norm = 0.1,
         report_to = "none", # Can use Weights & Biases
-        output_dir = "outputs",
+        output_dir = output_dir,
     )
     logger.info(f"Training configuration: {training_args}")
 
@@ -121,7 +123,18 @@ if args.mode == "train":
         train_dataset = dataset,
     )
     logger.info("Starting training")
-    trainer.train()
+    
+    if args.mode == "continue":
+        logger.info(f"Continuing training from checkpoint")
+        if args.checkpoint_path:
+            logger.info(f"Using specified checkpoint: {args.checkpoint_path}")
+            trainer.train(resume_from_checkpoint=args.checkpoint_path)
+        else:
+            logger.info("Automatically finding latest checkpoint")
+            trainer.train(resume_from_checkpoint=True)
+    else:
+        trainer.train()
+    
     logger.info("Training completed")
 
     text = tokenizer.apply_chat_template([
@@ -139,8 +152,14 @@ if args.mode == "train":
         lora_request = None,
     )[0].outputs[0].text
 
-    logger.info(f"Saving LoRA adapter to {args.lora_name}")
-    model.save_lora(args.lora_name)
+    # Add timestamp to lora_name if continuing training
+    lora_save_name = args.lora_name
+    if args.mode == "continue":
+        lora_base_name = args.lora_name
+        lora_save_name = f"{lora_base_name}_{timestamp}"
+    
+    logger.info(f"Saving LoRA adapter to {lora_save_name}")
+    model.save_lora(lora_save_name)
 
     text = tokenizer.apply_chat_template([
         {"role" : "system", "content" : utils.SYSTEM_PROMPT},
@@ -169,7 +188,7 @@ if args.mode == "train":
     output = model.fast_generate(
         text,
         sampling_params = sampling_params,
-        lora_request = model.load_lora(args.lora_name),
+        lora_request = model.load_lora(lora_save_name),
     )[0].outputs[0].text
 
     logger.info("Output with LoRA:")
@@ -182,15 +201,21 @@ logger.info(f"Test dataset loaded with {len(test_dataset)} examples")
 
 # Run evaluation with the model
 logger.info("Starting evaluation")
+lora_path = args.lora_name if args.mode == "evaluate" else (lora_save_name if 'lora_save_name' in locals() else args.lora_name)
 results = utils.evaluate_model_on_gsm8k(
     model, 
     test_dataset, 
     tokenizer, 
-    lora_path=args.lora_name if args.mode == "evaluate" else args.lora_name
+    lora_path=lora_path
 )
 
-# Save detailed results to file
-results_filename = f"./logs/{experiment_name}_results.json"
+# Create directory for results if it doesn't exist
+lora_dir = os.path.dirname(lora_path) if os.path.dirname(lora_path) else "."
+results_dir = lora_dir
+os.makedirs(results_dir, exist_ok=True)
+
+# Save detailed results to file in the lora directory
+results_filename = f"{results_dir}/{experiment_name}_results.json"
 with open(results_filename, "w") as f:
     json.dump(results['detailed_results'], f, indent=2)
 logger.info(f"Detailed results saved to {results_filename}")
