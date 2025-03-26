@@ -71,7 +71,7 @@ training_args = GRPOConfig(
     save_steps = 250,
     max_grad_norm = 0.1,
     report_to = "none", # Can use Weights & Biases
-    output_dir = "outputs",
+    output_dir = "unsloth_recipe",
 )
 
 trainer = GRPOTrainer(
@@ -148,3 +148,43 @@ with open("gsm8k_evaluation_results.json", "w") as f:
     json.dump(results['detailed_results'], f, indent=2)
 
 utils.analyze_errors(results)
+
+
+###
+# --- Previous code to load model, tokenizer, dataset ---
+
+# --- UPDATE max_steps in training_args ---
+training_args = GRPOConfig(
+    # ... (keep previous settings) ...
+    max_steps = 1000, # Or however many total steps you want
+    # save_steps = 100, # Maybe save more frequently now
+    # ... (other args) ...
+    output_dir = "outputs", # Keep the same output directory
+)
+
+trainer = GRPOTrainer(
+    model = model,
+    processing_class = tokenizer,
+    reward_funcs = [
+        utils.xmlcount_reward_func,
+        utils.soft_format_reward_func,
+        utils.strict_format_reward_func,
+        utils.int_reward_func,
+        utils.correctness_reward_func,
+    ],
+    args = training_args,
+    train_dataset = dataset,
+)
+
+# --- Resume training ---
+# Option 1: Automatically find the latest checkpoint in output_dir
+trainer.train(resume_from_checkpoint = True)
+
+# Option 2: Explicitly specify the checkpoint path
+# checkpoint_path = "outputs/checkpoint-250" # Path to the specific checkpoint
+# trainer.train(resume_from_checkpoint = checkpoint_path)
+
+# --- Save final LoRA adapters after continued training ---
+model.save_lora("grpo_saved_lora_continued") # Save with a new name or overwrite
+
+# --- Continue with evaluation etc. ---
