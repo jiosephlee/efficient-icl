@@ -1,8 +1,9 @@
 from vllm import SamplingParams
 from tqdm import tqdm
 import re
+from datasets import load_dataset, Dataset
 
-# Load and prep dataset
+# Prompts
 SYSTEM_PROMPT = """
 Respond in the following format:
 <reasoning>
@@ -32,6 +33,25 @@ def extract_hash_answer(text: str) -> str | None:
         return None
     return text.split("####")[1].strip()
 
+# uncomment middle messages for 1-shot prompting
+def get_gsm8k_questions(split = "train") -> Dataset:
+    data = load_dataset('openai/gsm8k', 'main')[split] # type: ignore
+    data = data.map(lambda x: { # type: ignore
+        'prompt': [
+            {'role': 'system', 'content': SYSTEM_PROMPT},
+            {'role': 'user', 'content': x['question']}
+        ],
+        'answer': extract_hash_answer(x['answer'])
+    }) # type: ignore
+    return data # type: ignore
+
+# Function to get dataset based on argument
+def get_dataset(dataset_name, split="train"):
+    if dataset_name == "gsm8k":
+        return get_gsm8k_questions(split)
+    else:
+        raise ValueError(f"Dataset {dataset_name} not supported")
+    
 # Reward functions
 def correctness_reward_func(prompts, completions, answer, **kwargs) -> list[float]:
     responses = [completion[0]['content'] for completion in completions]
