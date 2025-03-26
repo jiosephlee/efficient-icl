@@ -30,11 +30,10 @@ args = parser.parse_args()
 # Create timestamp for directories and filenames
 timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
 experiment_name = f"{args.dataset}_{args.model.split('/')[-1]}_{args.mode}_{timestamp}"
-output_dir = f"./logs/{timestamp}"
-os.makedirs(output_dir, exist_ok=True)
+output_dir = f"./training_logs/{timestamp}"
 
 # Setup logging to the output directory
-log_file = f"{output_dir}/{experiment_name}.log"
+log_file = f"./logs/{experiment_name}.log"
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
@@ -83,6 +82,7 @@ if args.mode == "train" or args.mode == "continue":
     logger.info(f"Loading {args.dataset} training dataset")
     dataset = utils.get_dataset(args.dataset, "train")
     logger.info(f"Dataset loaded with {len(dataset)} examples")
+    os.makedirs(output_dir, exist_ok=True)
 
     max_prompt_length = 512
 
