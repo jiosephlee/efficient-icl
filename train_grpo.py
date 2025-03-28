@@ -178,6 +178,7 @@ logger.info(f"Test dataset loaded with {len(test_dataset)} examples")
 # Run evaluation with the model
 logger.info("Starting evaluation")
 lora_path = f"models/{model_dir}" if args.mode == "evaluate" else (lora_save_name if 'lora_save_name' in locals() else args.lora_name)
+logger.info(f"Using the lora adapter: {'Base' if args.lora_name == 'Base' else lora_path}")
 results = utils.evaluate_model(
     model, 
     test_dataset, 

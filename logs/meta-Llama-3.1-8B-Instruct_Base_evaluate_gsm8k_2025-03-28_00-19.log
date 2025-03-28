@@ -6,3 +6,6 @@
 2025-03-28 00:19:58,949 - INFO - Loading gsm8k test dataset for evaluation
 2025-03-28 00:20:00,325 - INFO - Test dataset loaded with 1319 examples
 2025-03-28 00:20:00,325 - INFO - Starting evaluation
+2025-03-28 01:13:46,692 - INFO - Detailed results saved to ./models/meta-Llama-3.1-8B-Instruct/Base//gsm8k_2025-03-28_00-19_results.json
+2025-03-28 01:13:46,692 - INFO - Accuracy: 0.70%
+2025-03-28 01:13:46,693 - INFO - Experiment completed. Log saved to ./logs/meta-Llama-3.1-8B-Instruct_Base_evaluate_gsm8k_2025-03-28_00-19.log
