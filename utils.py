@@ -110,7 +110,7 @@ def xmlcount_reward_func(completions, **kwargs) -> list[float]:
 
 # Evaluate on GSM8K test set
 
-def evaluate_model_on_gsm8k(model, test_data, tokenizer, lora_path=None):
+def evaluate_model(model, test_data, tokenizer, lora_path=None):
     correct = 0
     total = 0
     results = []

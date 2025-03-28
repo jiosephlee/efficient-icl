@@ -23,14 +23,13 @@ parser.add_argument("--mode", type=str, choices=["train", "evaluate", "continue"
 parser.add_argument("--lora_name", type=str, help="Name of the LoRA adapter to save or load")
 parser.add_argument("--dataset", type=str, default="gsm8k",
                     help="Dataset to train or evaluate on (default: gsm8k)")
-parser.add_argument("--checkpoint_path", type=str, help="Path to checkpoint for continuing training")
+parser.add_argument("--checkpoint_for_continued_training", type=str, help="Path to checkpoint for continuing training")
 
 args = parser.parse_args()
 
 # Create timestamp for directories and filenames
 timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
 experiment_name = f"{args.dataset}_{args.model.split('/')[-1]}_{args.mode}_{timestamp}"
-output_dir = f"./training_logs/{timestamp}"
 
 # Setup logging to the output directory
 log_file = f"./logs/{experiment_name}.log"
@@ -82,6 +81,7 @@ if args.mode == "train" or args.mode == "continue":
     logger.info(f"Loading {args.dataset} training dataset")
     dataset = utils.get_dataset(args.dataset, "train")
     logger.info(f"Dataset loaded with {len(dataset)} examples")
+    output_dir = f"./checkpoints/{args.lora_name}_{timestamp}"
     os.makedirs(output_dir, exist_ok=True)
 
     max_prompt_length = 512
@@ -202,7 +202,7 @@ logger.info(f"Test dataset loaded with {len(test_dataset)} examples")
 # Run evaluation with the model
 logger.info("Starting evaluation")
 lora_path = args.lora_name if args.mode == "evaluate" else (lora_save_name if 'lora_save_name' in locals() else args.lora_name)
-results = utils.evaluate_model_on_gsm8k(
+results = utils.evaluate_model(
     model, 
     test_dataset, 
     tokenizer, 
