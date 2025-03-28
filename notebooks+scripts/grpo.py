@@ -11,7 +11,6 @@ import os
 import argparse
 import datetime
 import logging
-sys.path.append("../")
 import utils
 
 # Parse command line arguments
@@ -81,7 +80,7 @@ if args.mode == "train" or args.mode == "continue":
     logger.info(f"Loading {args.dataset} training dataset")
     dataset = utils.get_dataset(args.dataset, "train")
     logger.info(f"Dataset loaded with {len(dataset)} examples")
-    output_dir = f"./checkpoints/{args.model.split('/')[-1]}/{args.lora_name}_{timestamp}"
+    output_dir = f"{args.model.split('/')[-1]}/{args.lora_name}_{timestamp}"
     os.makedirs(output_dir, exist_ok=True)
 
     max_prompt_length = 512
@@ -105,7 +104,7 @@ if args.mode == "train" or args.mode == "continue":
         save_steps = 250,
         max_grad_norm = 0.1,
         report_to = "none", # Can use Weights & Biases
-        output_dir = output_dir,
+        output_dir = f"./checkpoints/{output_dir}",
     )
     logger.info(f"Training configuration: {training_args}")
 
