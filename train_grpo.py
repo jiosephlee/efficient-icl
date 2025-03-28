@@ -182,7 +182,7 @@ results = utils.evaluate_model(
     model, 
     test_dataset, 
     tokenizer, 
-    lora_path=lora_path
+    lora_path=None if args.lora_name == 'Base' else lora_path
 )
 
 # Create directory for results if it doesn't exist
