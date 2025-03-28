@@ -1,0 +1,11 @@
+2025-03-26 03:44:00,225 - INFO - Starting experiment: gsm8k_meta-Llama-3.1-8B-Instruct_evaluate_20250326_034400
+2025-03-26 03:44:00,225 - INFO - Arguments: Namespace(model='meta-llama/meta-Llama-3.1-8B-Instruct', mode='evaluate', lora_name='v0', dataset='gsm8k', checkpoint_path=None)
+2025-03-26 03:44:00,225 - INFO - Using max_seq_length=2048, lora_rank=32
+2025-03-26 03:44:33,242 - INFO - Model loaded: meta-llama/meta-Llama-3.1-8B-Instruct
+2025-03-26 03:44:36,287 - INFO - PEFT model configured
+2025-03-26 03:44:36,288 - INFO - Loading gsm8k test dataset for evaluation
+2025-03-26 03:44:36,921 - INFO - Test dataset loaded with 1319 examples
+2025-03-26 03:44:36,921 - INFO - Starting evaluation
+2025-03-26 04:38:22,677 - INFO - Detailed results saved to ./gsm8k_meta-Llama-3.1-8B-Instruct_evaluate_20250326_034400_results.json
+2025-03-26 04:38:22,678 - INFO - Accuracy: 0.13%
+2025-03-26 04:38:22,679 - INFO - Experiment completed. Log saved to ./logs/gsm8k_meta-Llama-3.1-8B-Instruct_evaluate_20250326_034400.log

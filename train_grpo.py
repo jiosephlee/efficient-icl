@@ -27,8 +27,11 @@ parser.add_argument("--checkpoint_for_continued_training", type=str, help="Path 
 args = parser.parse_args()
 
 # Create experiment name to centralize logging
-timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-experiment_name = f"{args.dataset}_{args.model.split('/')[-1]}_{args.lora_name}_{args.mode}_{timestamp}"
+timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M")
+experiment_name = f"{args.model.split('/')[-1]}_{args.lora_name}_{args.mode}_{args.dataset}_{timestamp}"
+# Tracking model-specific weights results, and metrics
+model_dir = f"{args.model.split('/')[-1]}/{args.lora_name}/"
+os.makedirs(model_dir, exist_ok=True)
 
 # Setup logging to the output directory
 log_file = f"./logs/{experiment_name}.log"
@@ -80,8 +83,6 @@ if args.mode == "train" or args.mode == "continue":
     logger.info(f"Loading {args.dataset} training dataset")
     dataset = utils.get_dataset(args.dataset, "train")
     logger.info(f"Dataset loaded with {len(dataset)} examples")
-    output_dir = f"{args.model.split('/')[-1]}/{args.lora_name}_{timestamp}"
-    os.makedirs(output_dir, exist_ok=True)
 
     max_prompt_length = 512
 
@@ -104,7 +105,7 @@ if args.mode == "train" or args.mode == "continue":
         save_steps = 250,
         max_grad_norm = 0.1,
         report_to = "none", # Can use Weights & Biases
-        output_dir = f"./checkpoints/{output_dir}",
+        output_dir = f"./checkpoints/{model_dir}",
     )
     logger.info(f"Training configuration: {training_args}")
 
@@ -136,15 +137,12 @@ if args.mode == "train" or args.mode == "continue":
     
     logger.info("Training completed")
     
-    # Add timestamp to lora_name if continuing training
-    lora_save_name = args.lora_name
-    if args.mode == "continue":
-        lora_base_name = args.lora_name
-        lora_save_name = f"models/{args.model.split('/')[-1]}/{lora_base_name}_{timestamp}"
-
+    # Save Lora Adapter
+    lora_save_name = f"models/{model_dir}"
     logger.info(f"Saving LoRA adapter to {lora_save_name}")
     model.save_lora(lora_save_name)
 
+    # Model sample output
     text = tokenizer.apply_chat_template([
         {"role" : "system", "content" : utils.SYSTEM_PROMPT},
         {"role" : "user", "content" : "Calculate pi."},
@@ -162,12 +160,7 @@ if args.mode == "train" or args.mode == "continue":
     )[0].outputs[0].text
     logger.info("Output without LoRA:")
     logger.info(output)
-
-    sampling_params = SamplingParams(
-        temperature = 0.8,
-        top_p = 0.95,
-        max_tokens = 1024,
-    )
+    
     output = model.fast_generate(
         text,
         sampling_params = sampling_params,
@@ -184,7 +177,7 @@ logger.info(f"Test dataset loaded with {len(test_dataset)} examples")
 
 # Run evaluation with the model
 logger.info("Starting evaluation")
-lora_path = args.lora_name if args.mode == "evaluate" else (lora_save_name if 'lora_save_name' in locals() else args.lora_name)
+lora_path = f"models/{model_dir}" if args.mode == "evaluate" else (lora_save_name if 'lora_save_name' in locals() else args.lora_name)
 results = utils.evaluate_model(
     model, 
     test_dataset, 
@@ -193,11 +186,11 @@ results = utils.evaluate_model(
 )
 
 # Create directory for results if it doesn't exist
-results_dir = f"models/{args.model.split('/')[-1]}/{lora_base_name}_{timestamp}"
+results_dir = f"models/{model_dir}"
 os.makedirs(results_dir, exist_ok=True)
 
 # Save detailed results to file in the model-specific directory
-results_filename = f"./{results_dir}/results.json"
+results_filename = f"./{results_dir}/{args.dataset}_{timestamp}_results.json"
 with open(results_filename, "w") as f:
     json.dump(results, f, indent=2)
 logger.info(f"Detailed results saved to {results_filename}")
