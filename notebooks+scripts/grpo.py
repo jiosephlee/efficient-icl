@@ -27,9 +27,9 @@ parser.add_argument("--checkpoint_for_continued_training", type=str, help="Path 
 
 args = parser.parse_args()
 
-# Create timestamp for directories and filenames
+# Create experiment name to centralize logging
 timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-experiment_name = f"{args.dataset}_{args.model.split('/')[-1]}_{args.mode}_{timestamp}"
+experiment_name = f"{args.dataset}_{args.model.split('/')[-1]}_{args.lora_name}_{args.mode}_{timestamp}"
 
 # Setup logging to the output directory
 log_file = f"./logs/{experiment_name}.log"
@@ -81,7 +81,7 @@ if args.mode == "train" or args.mode == "continue":
     logger.info(f"Loading {args.dataset} training dataset")
     dataset = utils.get_dataset(args.dataset, "train")
     logger.info(f"Dataset loaded with {len(dataset)} examples")
-    output_dir = f"./checkpoints/{args.lora_name}_{timestamp}"
+    output_dir = f"./checkpoints/{args.model.split('/')[-1]}/{args.lora_name}_{timestamp}"
     os.makedirs(output_dir, exist_ok=True)
 
     max_prompt_length = 512
@@ -125,7 +125,7 @@ if args.mode == "train" or args.mode == "continue":
     logger.info("Starting training")
     
     if args.mode == "continue":
-        logger.info(f"Continuing training from checkpoint")
+        logger.info("Continuing training from checkpoint")
         if args.checkpoint_path:
             logger.info(f"Using specified checkpoint: {args.checkpoint_path}")
             trainer.train(resume_from_checkpoint=args.checkpoint_path)
@@ -136,28 +136,13 @@ if args.mode == "train" or args.mode == "continue":
         trainer.train()
     
     logger.info("Training completed")
-
-    text = tokenizer.apply_chat_template([
-        {"role" : "user", "content" : "Calculate pi."},
-    ], tokenize = False, add_generation_prompt = True)
-
-    sampling_params = SamplingParams(
-        temperature = 0.8,
-        top_p = 0.95,
-        max_tokens = 1024,
-    )
-    output = model.fast_generate(
-        [text],
-        sampling_params = sampling_params,
-        lora_request = None,
-    )[0].outputs[0].text
-
+    
     # Add timestamp to lora_name if continuing training
     lora_save_name = args.lora_name
     if args.mode == "continue":
         lora_base_name = args.lora_name
-        lora_save_name = f"{lora_base_name}_{timestamp}"
-    
+        lora_save_name = f"models/{args.model.split('/')[-1]}/{lora_base_name}_{timestamp}"
+
     logger.info(f"Saving LoRA adapter to {lora_save_name}")
     model.save_lora(lora_save_name)
 
@@ -165,7 +150,6 @@ if args.mode == "train" or args.mode == "continue":
         {"role" : "system", "content" : utils.SYSTEM_PROMPT},
         {"role" : "user", "content" : "Calculate pi."},
     ], tokenize = False, add_generation_prompt = True)
-
 
     sampling_params = SamplingParams(
         temperature = 0.8,
@@ -210,14 +194,13 @@ results = utils.evaluate_model(
 )
 
 # Create directory for results if it doesn't exist
-lora_dir = os.path.dirname(lora_path) if os.path.dirname(lora_path) else "."
-results_dir = lora_dir
+results_dir = f"models/{args.model.split('/')[-1]}/{lora_base_name}_{timestamp}"
 os.makedirs(results_dir, exist_ok=True)
 
-# Save detailed results to file in the lora directory
-results_filename = f"{results_dir}/{experiment_name}_results.json"
+# Save detailed results to file in the model-specific directory
+results_filename = f"./{results_dir}/results.json"
 with open(results_filename, "w") as f:
-    json.dump(results['detailed_results'], f, indent=2)
+    json.dump(results, f, indent=2)
 logger.info(f"Detailed results saved to {results_filename}")
 
 utils.analyze_errors(results)
