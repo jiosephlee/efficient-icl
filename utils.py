@@ -2,6 +2,7 @@ from vllm import SamplingParams
 from tqdm import tqdm
 import re
 from datasets import load_dataset, Dataset
+import re
 
 # Prompts
 SYSTEM_PROMPT = """
@@ -22,10 +23,19 @@ XML_COT_FORMAT = """\
 {answer}
 </answer>
 """
-
 def extract_xml_answer(text: str) -> str:
-    answer = text.split("<answer>")[-1]
-    answer = answer.split("</answer>")[0]
+    # Try to extract from XML tags
+    if "<answer>" in text and "</answer>" in text:
+        answer = text.split("<answer>")[-1]
+        answer = answer.split("</answer>")[0]
+    else:
+        # If no answer tags, take the last line
+        answer = text.strip().split("\n")[-1]
+    
+    # Extract number using regex
+    number_match = re.search(r'\d+(?:\.\d+)?', answer.strip())
+    if number_match:
+        return number_match.group(0)
     return answer.strip()
 
 def extract_hash_answer(text: str) -> str | None:
