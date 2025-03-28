@@ -1,21 +1,20 @@
 #!/bin/bash
 
 # Define an array of model configurations
-# Each entry contains: MODEL_PATH MODEL_NAME LORA_NAME
+# Each entry contains: MODEL_PATH MODEL_NAME LORA_NAME MODE
 declare -a MODELS=(
-    "Qwen/Qwen2.5-7B-Instruct Qwen2.5-7B-Instruct Base"
-    "meta-llama/meta-Llama-3.1-8B-Instruct meta-Llama-3.1-8B-Instruct Base"
-    "meta-llama/meta-Llama-3.1-8B-Instruct meta-Llama-3.1-8B-Instruct v0"
+    "Qwen/Qwen2.5-7B-Instruct Qwen2.5-7B-Instruct Base evaluate"
+    "meta-llama/meta-Llama-3.1-8B-Instruct meta-Llama-3.1-8B-Instruct Base evaluate"
+    "meta-llama/meta-Llama-3.1-8B-Instruct meta-Llama-3.1-8B-Instruct v0 train"
 )
 
 DATASET="gsm8k"
-MODE="evaluate"
 DATE=$(date +"%Y-%m-%d_%H_%M")
 
 # Build a command chain that runs each model sequentially
 CMD=""
 for MODEL_CONFIG in "${MODELS[@]}"; do
-    read -r MODEL_PATH MODEL_NAME LORA_NAME <<< "$MODEL_CONFIG"
+    read -r MODEL_PATH MODEL_NAME LORA_NAME MODE <<< "$MODEL_CONFIG"
     
     if [ -n "$CMD" ]; then
         CMD+=" && "

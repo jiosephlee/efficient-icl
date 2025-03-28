@@ -43,22 +43,48 @@ def extract_hash_answer(text: str) -> str | None:
         return None
     return text.split("####")[1].strip()
 
-# uncomment middle messages for 1-shot prompting
-def get_gsm8k_questions(split = "train") -> Dataset:
+def get_gsm8k_questions(split = "train", few_shot=False, k_shot=5) -> Dataset:
     data = load_dataset('openai/gsm8k', 'main')[split] # type: ignore
-    data = data.map(lambda x: { # type: ignore
-        'prompt': [
-            {'role': 'system', 'content': SYSTEM_PROMPT},
-            {'role': 'user', 'content': x['question']}
-        ],
-        'answer': extract_hash_answer(x['answer'])
-    }) # type: ignore
+    
+    if few_shot:
+        # Get k random examples from training set for few-shot learning
+        train_data = load_dataset('openai/gsm8k', 'main')["train"] # type: ignore
+        # Sample k random examples
+        few_shot_examples = train_data.shuffle(seed=42).select(range(k_shot)) # type: ignore
+        
+        # Process the data with few-shot examples
+        data = data.map(lambda x: { # type: ignore
+            'prompt': [
+                {'role': 'system', 'content': SYSTEM_PROMPT},
+                # Include few-shot examples in the prompt
+                *sum([[
+                    {'role': 'user', 'content': example['question']},
+                    {'role': 'assistant', 'content': XML_COT_FORMAT.format(
+                        reasoning=example['answer'].split('####')[0].strip(),
+                        answer=extract_hash_answer(example['answer'])
+                    )}
+                ] for example in few_shot_examples], []),
+                # Add the actual question
+                {'role': 'user', 'content': x['question']}
+            ],
+            'answer': extract_hash_answer(x['answer'])
+        }) # type: ignore
+    else:
+        # Standard processing without few-shot examples
+        data = data.map(lambda x: { # type: ignore
+            'prompt': [
+                {'role': 'system', 'content': SYSTEM_PROMPT},
+                {'role': 'user', 'content': x['question']}
+            ],
+            'answer': extract_hash_answer(x['answer'])
+        }) # type: ignore
+    
     return data # type: ignore
 
 # Function to get dataset based on argument
-def get_dataset(dataset_name, split="train"):
+def get_dataset(dataset_name, split="train", few_shot=False, k_shot=5):
     if dataset_name == "gsm8k":
-        return get_gsm8k_questions(split)
+        return get_gsm8k_questions(split, few_shot, k_shot)
     else:
         raise ValueError(f"Dataset {dataset_name} not supported")
     
