@@ -1,0 +1,11 @@
+2025-03-29 02:23:59,306 - INFO - Starting experiment: Qwen2.5-7B-Instruct_v0_evaluate_gsm8k_2025-03-29_02-23
+2025-03-29 02:23:59,306 - INFO - Arguments: Namespace(model='Qwen/Qwen2.5-7B-Instruct', mode='evaluate', lora_name='v0', dataset='gsm8k', few_shot=5, checkpoint_for_continued_training=None)
+2025-03-29 02:23:59,306 - INFO - Using max_seq_length=2048, lora_rank=32
+2025-03-29 02:24:32,128 - INFO - Model loaded: Qwen/Qwen2.5-7B-Instruct
+2025-03-29 02:24:35,238 - INFO - PEFT model configured
+2025-03-29 02:24:35,238 - INFO - Loading gsm8k test dataset for evaluation
+2025-03-29 02:24:35,238 - INFO - Running zero-shot evaluation
+2025-03-29 02:24:36,187 - INFO - Test dataset loaded with 1319 examples
+2025-03-29 02:24:36,187 - INFO - Starting zero-shot evaluation
+2025-03-29 02:24:36,187 - INFO - Using the lora adapter: models/Qwen2.5-7B-Instruct/v0/
+2025-03-29 02:24:36,187 - INFO - Zero-shot detailed results saved to ./models/Qwen2.5-7B-Instruct/v0//gsm8k_zeroshot_2025-03-29_02-23_results.json

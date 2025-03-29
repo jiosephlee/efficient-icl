@@ -33,7 +33,6 @@ timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M")
 experiment_name = f"{args.model.split('/')[-1]}_{args.lora_name}_{args.mode}_{args.dataset}_{timestamp}"
 # Tracking model-specific weights results, and metrics
 model_dir = f"{args.model.split('/')[-1]}/{args.lora_name}/"
-os.makedirs("./models/"+model_dir, exist_ok=True)
 
 # Setup logging to the output directory
 log_file = f"./logs/{experiment_name}.log"
@@ -140,9 +139,9 @@ if args.mode == "train" or args.mode == "continue" or args.mode == 'train_no_eva
     logger.info("Training completed")
     
     # Save Lora Adapter
-    lora_save_name = f"models/{model_dir}"
-    logger.info(f"Saving LoRA adapter to {lora_save_name}")
-    model.save_lora(lora_save_name)
+    lora_file_path = f"./models/{model_dir}"
+    logger.info(f"Saving LoRA adapter to {lora_file_path}")
+    model.save_lora(lora_file_path)
 
     # Model sample output
     text = tokenizer.apply_chat_template([
@@ -166,39 +165,43 @@ if args.mode == "train" or args.mode == "continue" or args.mode == 'train_no_eva
     output = model.fast_generate(
         text,
         sampling_params = sampling_params,
-        lora_request = model.load_lora(lora_save_name),
+        lora_request = model.load_lora(lora_file_path),
     )[0].outputs[0].text
 
     logger.info("Output with LoRA:")
     logger.info(output)
 
 if args.mode != "train_no_evaluate":
-    # Evaluation mode (runs for both train and evaluate modes)
     logger.info(f"Loading {args.dataset} test dataset for evaluation")
     
-    # Zero-shot evaluation
+    # Run evaluation with the model
     logger.info("Running zero-shot evaluation")
     test_dataset = utils.get_dataset(args.dataset, "test", few_shot=False)
     logger.info(f"Test dataset loaded with {len(test_dataset)} examples")
 
-    # Run evaluation with the model
     logger.info("Starting zero-shot evaluation")
-    lora_path = f"models/{model_dir}" if args.mode == "evaluate" else (lora_save_name if 'lora_save_name' in locals() else args.lora_name)
+    lora_path = f"models/{model_dir}"
     logger.info(f"Using the lora adapter: {'Base' if args.lora_name == 'Base' else lora_path}")
     results = utils.evaluate_model(
         model, 
         test_dataset, 
         tokenizer, 
-        lora_path=None if args.lora_name == 'Base' else lora_path,
-        few_shot=False
+        lora_path=None if args.lora_name == 'Base' else lora_path
+    )
+    logger.info("Running few-shot evaluation")
+    test_dataset_few_shot = utils.get_dataset(args.dataset, "test", few_shot=True, k_shot=5)
+    logger.info(f"Few-shot test dataset loaded with {len(test_dataset_few_shot)} examples")
+
+    logger.info("Starting few-shot evaluation")
+    few_shot_results = utils.evaluate_model(
+        model, 
+        test_dataset_few_shot, 
+        tokenizer, 
+        lora_path=None if args.lora_name == 'Base' else lora_path
     )
 
-    # Create directory for results if it doesn't exist
-    results_dir = f"models/{model_dir}"
-    os.makedirs(results_dir, exist_ok=True)
-
     # Save detailed results to file in the model-specific directory
-    results_filename = f"./{results_dir}/{args.dataset}_zeroshot_{timestamp}_results.json"
+    results_filename = f"./{lora_path}/{args.dataset}_zeroshot_{timestamp}_results.json"
     with open(results_filename, "w") as f:
         json.dump(results, f, indent=2)
     logger.info(f"Zero-shot detailed results saved to {results_filename}")
@@ -206,24 +209,7 @@ if args.mode != "train_no_evaluate":
     utils.analyze_errors(results)
     logger.info(f"Zero-shot Accuracy: {results['accuracy']:.2f}%")
     
-    # Few-shot evaluation
-    logger.info("Running few-shot evaluation")
-    test_dataset_few_shot = utils.get_dataset(args.dataset, "test", few_shot=True, k_shot=5)
-    logger.info(f"Few-shot test dataset loaded with {len(test_dataset_few_shot)} examples")
-
-    # Run few-shot evaluation with the model
-    logger.info("Starting few-shot evaluation")
-    few_shot_results = utils.evaluate_model(
-        model, 
-        test_dataset_few_shot, 
-        tokenizer, 
-        lora_path=None if args.lora_name == 'Base' else lora_path,
-        few_shot=True,
-        k_shot=5
-    )
-
-    # Save few-shot detailed results
-    few_shot_results_filename = f"./{results_dir}/{args.dataset}_5-shot_{timestamp}_results.json"
+    few_shot_results_filename = f"./{lora_path}/{args.dataset}_5-shot_{timestamp}_results.json"
     with open(few_shot_results_filename, "w") as f:
         json.dump(few_shot_results, f, indent=2)
     logger.info(f"Few-shot detailed results saved to {few_shot_results_filename}")

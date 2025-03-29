@@ -139,7 +139,7 @@ def xmlcount_reward_func(completions, **kwargs) -> list[float]:
 
 
 # Evaluate on GSM8K test set
-def evaluate_model(model, test_data, tokenizer, lora_path=None, few_shot=False, k_shot=5):
+def evaluate_model(model, test_data, tokenizer, lora_path=None):
     correct = 0
     total = 0
     results = []
@@ -160,15 +160,16 @@ def evaluate_model(model, test_data, tokenizer, lora_path=None, few_shot=False, 
     for item in tqdm(test_data):
         # The prompt is already formatted in the dataset
         prompt = tokenizer.apply_chat_template(
-            item['prompt'][0],
+            item['prompt'],
             tokenize=False, 
             add_generation_prompt=True
         )
-        print(item['prompt'][0])
+        print(item['prompt'])
+        print(prompt)
         break
         # Generate response
         output = model.fast_generate(
-            [prompt],
+            prompt,
             sampling_params=sampling_params,
             lora_request=lora_request
         )[0].outputs[0].text
@@ -185,7 +186,7 @@ def evaluate_model(model, test_data, tokenizer, lora_path=None, few_shot=False, 
             # Save detailed results
             results.append({
                 'question': item['question'],
-                'prompt': item['prompt'][0],  # The last message is the question
+                'prompt': prompt,  # The last message is the question
                 'ground_truth': ground_truth,
                 'model_answer': model_answer,
                 'full_response': output,
@@ -196,8 +197,8 @@ def evaluate_model(model, test_data, tokenizer, lora_path=None, few_shot=False, 
             print(f"Error processing answer: {e}")
             results.append({
                 'question': item['question'],
-                'prompt': item['prompt'][0],  
-                'ground_truth': item['answer'],
+                'prompt': prompt,  
+                'ground_truth': ground_truth,
                 'model_answer': "ERROR",
                 'full_response': output,
                 'is_correct': False

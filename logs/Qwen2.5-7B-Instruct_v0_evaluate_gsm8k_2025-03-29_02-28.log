@@ -1,0 +1,3 @@
+2025-03-29 02:28:39,622 - INFO - Starting experiment: Qwen2.5-7B-Instruct_v0_evaluate_gsm8k_2025-03-29_02-28
+2025-03-29 02:28:39,622 - INFO - Arguments: Namespace(model='Qwen/Qwen2.5-7B-Instruct', mode='evaluate', lora_name='v0', dataset='gsm8k', few_shot=5, checkpoint_for_continued_training=None)
+2025-03-29 02:28:39,622 - INFO - Using max_seq_length=2048, lora_rank=32

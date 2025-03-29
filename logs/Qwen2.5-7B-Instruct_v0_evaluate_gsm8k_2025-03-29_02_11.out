@@ -1,0 +1,60 @@
+🦥 Unsloth: Will patch your computer to enable 2x faster free finetuning.
+🦥 Unsloth Zoo will now patch everything to make training faster!
+INFO 03-29 02:11:25 [__init__.py:256] Automatically detected platform cuda.
+2025-03-29 02:11:26,695 - INFO - Starting experiment: Qwen2.5-7B-Instruct_v0_evaluate_gsm8k_2025-03-29_02-11
+2025-03-29 02:11:26,695 - INFO - Arguments: Namespace(model='Qwen/Qwen2.5-7B-Instruct', mode='evaluate', lora_name='v0', dataset='gsm8k', few_shot=5, checkpoint_for_continued_training=None)
+2025-03-29 02:11:26,695 - INFO - Using max_seq_length=2048, lora_rank=32
+==((====))==  Unsloth 2025.3.18: Fast Qwen2 patching. Transformers: 4.50.0. vLLM: 0.8.1.
+   \\   /|    NVIDIA GeForce RTX 3090. Num GPUs = 1. Max memory: 23.586 GB. Platform: Linux.
+O^O/ \_/ \    Torch: 2.6.0+cu124. CUDA: 8.6. CUDA Toolkit: 12.4. Triton: 3.2.0
+\        /    Bfloat16 = TRUE. FA [Xformers = 0.0.29.post2. FA2 = False]
+ "-____-"     Free license: http://github.com/unslothai/unsloth
+Unsloth: Fast downloading is enabled - ignore downloading bars which are red colored!
+Unsloth: vLLM loading unsloth/qwen2.5-7b-instruct-unsloth-bnb-4bit with actual GPU utilization = 58.68%
+Unsloth: Your GPU has CUDA compute capability 8.6 with VRAM = 23.59 GB.
+Unsloth: Using conservativeness = 1.0. Chunked prefill tokens = 2048. Num Sequences = 192.
+Unsloth: vLLM's KV Cache can use up to 7.86 GB. Also swap space = 6 GB.
+INFO 03-29 02:11:32 [config.py:583] This model supports multiple tasks: {'score', 'embed', 'generate', 'classify', 'reward'}. Defaulting to 'generate'.
+WARNING 03-29 02:11:32 [arg_utils.py:1765] --quantization bitsandbytes is not supported by the V1 Engine. Falling back to V0. 
+Unsloth: vLLM Bitsandbytes config using kwargs = {'load_in_8bit': False, 'load_in_4bit': True, 'bnb_4bit_compute_dtype': 'bfloat16', 'bnb_4bit_quant_storage': 'uint8', 'bnb_4bit_quant_type': 'nf4', 'bnb_4bit_use_double_quant': True, 'llm_int8_enable_fp32_cpu_offload': False, 'llm_int8_has_fp16_weight': False, 'llm_int8_skip_modules': ['lm_head', 'multi_modal_projector', 'merger', 'modality_projection', 'model.layers.0.self_attn', 'model.layers.1.self_attn', 'model.layers.2.mlp', 'model.layers.3.mlp', 'model.layers.4.mlp', 'model.layers.25.mlp', 'model.layers.26.mlp'], 'llm_int8_threshold': 6.0}
+INFO 03-29 02:11:32 [llm_engine.py:241] Initializing a V0 LLM engine (v0.8.1) with config: model='unsloth/qwen2.5-7b-instruct-unsloth-bnb-4bit', speculative_config=None, tokenizer='unsloth/qwen2.5-7b-instruct-unsloth-bnb-4bit', skip_tokenizer_init=False, tokenizer_mode=auto, revision=None, override_neuron_config=None, tokenizer_revision=None, trust_remote_code=False, dtype=torch.bfloat16, max_seq_len=2048, download_dir=None, load_format=LoadFormat.BITSANDBYTES, tensor_parallel_size=1, pipeline_parallel_size=1, disable_custom_all_reduce=False, quantization=bitsandbytes, enforce_eager=False, kv_cache_dtype=auto,  device_config=cuda:0, decoding_config=DecodingConfig(guided_decoding_backend='xgrammar', reasoning_backend=None), observability_config=ObservabilityConfig(show_hidden_metrics=False, otlp_traces_endpoint=None, collect_model_forward_time=False, collect_model_execute_time=False), seed=0, served_model_name=unsloth/qwen2.5-7b-instruct-unsloth-bnb-4bit, num_scheduler_steps=1, multi_step_stream_outputs=True, enable_prefix_caching=True, chunked_prefill_enabled=False, use_async_output_proc=True, disable_mm_preprocessor_cache=False, mm_processor_kwargs=None, pooler_config=None, compilation_config={"level":0,"splitting_ops":[],"compile_sizes":[],"cudagraph_capture_sizes":[192,184,176,168,160,152,144,136,128,120,112,104,96,88,80,72,64,56,48,40,32,24,16,8,4,2,1],"max_capture_size":192}, use_cached_outputs=False, 
+INFO 03-29 02:11:32 [cuda.py:285] Using Flash Attention backend.
+INFO 03-29 02:11:32 [parallel_state.py:967] rank 0 in world size 1 is assigned as DP rank 0, PP rank 0, TP rank 0
+INFO 03-29 02:11:32 [model_runner.py:1110] Starting to load model unsloth/qwen2.5-7b-instruct-unsloth-bnb-4bit...
+INFO 03-29 02:11:32 [loader.py:1137] Loading weights with BitsAndBytes quantization. May take a while ...
+INFO 03-29 02:11:33 [weight_utils.py:257] Using model weights format ['*.safetensors']
+Loading safetensors checkpoint shards:   0% Completed | 0/2 [00:00<?, ?it/s]
+Loading safetensors checkpoint shards:  50% Completed | 1/2 [00:00<00:00,  3.10it/s]
+Loading safetensors checkpoint shards: 100% Completed | 2/2 [00:01<00:00,  1.67it/s]
+Loading safetensors checkpoint shards: 100% Completed | 2/2 [00:01<00:00,  1.80it/s]
+
+Loading safetensors checkpoint shards:   0% Completed | 0/2 [00:00<?, ?it/s]
+Loading safetensors checkpoint shards:  50% Completed | 1/2 [00:00<00:00,  3.07it/s]
+Loading safetensors checkpoint shards: 100% Completed | 2/2 [00:01<00:00,  1.62it/s]
+Loading safetensors checkpoint shards: 100% Completed | 2/2 [00:01<00:00,  1.74it/s]
+
+INFO 03-29 02:11:35 [punica_selector.py:18] Using PunicaWrapperGPU.
+INFO 03-29 02:11:35 [model_runner.py:1146] Model loading took 6.8758 GB and 2.698895 seconds
+INFO 03-29 02:11:37 [worker.py:267] Memory profiling takes 1.32 seconds
+INFO 03-29 02:11:37 [worker.py:267] the current vLLM instance can use total_gpu_memory (23.59GiB) x gpu_memory_utilization (0.59) = 13.84GiB
+INFO 03-29 02:11:37 [worker.py:267] model weights take 6.88GiB; non_torch_memory takes 0.06GiB; PyTorch activation peak memory takes 1.06GiB; the rest of the memory reserved for KV Cache is 5.85GiB.
+INFO 03-29 02:11:37 [executor_base.py:111] # cuda blocks: 6845, # CPU blocks: 7021
+INFO 03-29 02:11:37 [executor_base.py:116] Maximum concurrency for 2048 tokens per request: 53.48x
+INFO 03-29 02:11:40 [model_runner.py:1442] Capturing cudagraphs for decoding. This may lead to unexpected consequences if the model is not static. To run the model in eager mode, set 'enforce_eager=True' or use '--enforce-eager' in the CLI. If out-of-memory error occurs during cudagraph capture, consider decreasing `gpu_memory_utilization` or switching to eager mode. You can also reduce the `max_num_seqs` as needed to decrease memory usage.
+Capturing CUDA graph shapes:   0%|          | 0/27 [00:00<?, ?it/s]Capturing CUDA graph shapes:   4%|▎         | 1/27 [00:00<00:16,  1.57it/s]Capturing CUDA graph shapes:   7%|▋         | 2/27 [00:01<00:15,  1.61it/s]Capturing CUDA graph shapes:  11%|█         | 3/27 [00:01<00:14,  1.64it/s]Capturing CUDA graph shapes:  15%|█▍        | 4/27 [00:02<00:13,  1.65it/s]Capturing CUDA graph shapes:  19%|█▊        | 5/27 [00:03<00:13,  1.66it/s]Capturing CUDA graph shapes:  22%|██▏       | 6/27 [00:03<00:12,  1.67it/s]Capturing CUDA graph shapes:  26%|██▌       | 7/27 [00:04<00:11,  1.67it/s]Capturing CUDA graph shapes:  30%|██▉       | 8/27 [00:04<00:11,  1.68it/s]Capturing CUDA graph shapes:  33%|███▎      | 9/27 [00:05<00:10,  1.72it/s]Capturing CUDA graph shapes:  37%|███▋      | 10/27 [00:05<00:09,  1.75it/s]Capturing CUDA graph shapes:  41%|████      | 11/27 [00:06<00:09,  1.76it/s]Capturing CUDA graph shapes:  44%|████▍     | 12/27 [00:07<00:08,  1.78it/s]Capturing CUDA graph shapes:  48%|████▊     | 13/27 [00:07<00:07,  1.79it/s]Capturing CUDA graph shapes:  52%|█████▏    | 14/27 [00:08<00:07,  1.80it/s]Capturing CUDA graph shapes:  56%|█████▌    | 15/27 [00:08<00:06,  1.80it/s]Capturing CUDA graph shapes:  59%|█████▉    | 16/27 [00:09<00:06,  1.81it/s]Capturing CUDA graph shapes:  63%|██████▎   | 17/27 [00:09<00:05,  1.83it/s]Capturing CUDA graph shapes:  67%|██████▋   | 18/27 [00:10<00:04,  1.86it/s]Capturing CUDA graph shapes:  70%|███████   | 19/27 [00:10<00:04,  1.87it/s]Capturing CUDA graph shapes:  74%|███████▍  | 20/27 [00:11<00:03,  1.88it/s]Capturing CUDA graph shapes:  78%|███████▊  | 21/27 [00:11<00:03,  1.89it/s]Capturing CUDA graph shapes:  81%|████████▏ | 22/27 [00:12<00:02,  1.90it/s]Capturing CUDA graph shapes:  85%|████████▌ | 23/27 [00:12<00:02,  1.91it/s]Capturing CUDA graph shapes:  89%|████████▉ | 24/27 [00:13<00:01,  1.92it/s]Capturing CUDA graph shapes:  93%|█████████▎| 25/27 [00:13<00:01,  1.91it/s]Capturing CUDA graph shapes:  96%|█████████▋| 26/27 [00:14<00:00,  1.92it/s]Capturing CUDA graph shapes: 100%|██████████| 27/27 [00:14<00:00,  1.93it/s]Capturing CUDA graph shapes: 100%|██████████| 27/27 [00:14<00:00,  1.81it/s]
+INFO 03-29 02:11:55 [model_runner.py:1570] Graph capturing finished in 15 secs, took 0.56 GiB
+INFO 03-29 02:11:55 [llm_engine.py:447] init engine (profile, create kv cache, warmup model) took 20.05 seconds
+2025-03-29 02:11:58,367 - INFO - Model loaded: Qwen/Qwen2.5-7B-Instruct
+Unsloth 2025.3.18 patched 28 layers with 28 QKV layers, 28 O layers and 28 MLP layers.
+2025-03-29 02:12:01,596 - INFO - PEFT model configured
+2025-03-29 02:12:01,597 - INFO - Loading gsm8k test dataset for evaluation
+2025-03-29 02:12:01,597 - INFO - Running zero-shot evaluation
+2025-03-29 02:12:02,345 - INFO - Test dataset loaded with 1319 examples
+2025-03-29 02:12:02,346 - INFO - Starting zero-shot evaluation
+2025-03-29 02:12:02,346 - INFO - Using the lora adapter: models/Qwen2.5-7B-Instruct/v0/
+[rank0]: Traceback (most recent call last):
+[rank0]:   File "/home/josephL/efficient-icl/train_grpo.py", line 187, in <module>
+[rank0]:     results = utils.evaluate_model(
+[rank0]:               ^^^^^^^^^^^^^^^^^^^^^
+[rank0]: TypeError: evaluate_model() got an unexpected keyword argument 'few_shot'
+[rank0]:[W329 02:12:02.428389392 ProcessGroupNCCL.cpp:1496] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
