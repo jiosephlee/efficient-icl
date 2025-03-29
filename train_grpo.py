@@ -17,8 +17,8 @@ import utils
 parser = argparse.ArgumentParser(description="GRPO training and evaluation script")
 parser.add_argument("--model", type=str, default="meta-llama/meta-Llama-3.1-8B-Instruct", 
                     help="Model to load for training or evaluation")
-parser.add_argument("--mode", type=str, choices=["train", "evaluate", "continue"], default="train",
-                    help="Mode to run the script in: train (also evaluates), evaluate only, or continue training")
+parser.add_argument("--mode", type=str, choices=["train", "train_no_evaluate", "evaluate", "continue"], default="train",
+                    help="Mode to run the script in: train (also evaluates), train_no_evaluate (does not evaluate), evaluate only, or continue training")
 parser.add_argument("--lora_name", type=str, help="Name of the LoRA adapter to save or load")
 parser.add_argument("--dataset", type=str, default="gsm8k",
                     help="Dataset to train or evaluate on (default: gsm8k)")
@@ -170,34 +170,35 @@ if args.mode == "train" or args.mode == "continue":
     logger.info("Output with LoRA:")
     logger.info(output)
 
-# Evaluation mode (runs for both train and evaluate modes)
-logger.info(f"Loading {args.dataset} test dataset for evaluation")
-test_dataset = utils.get_dataset(args.dataset, "test")
-logger.info(f"Test dataset loaded with {len(test_dataset)} examples")
+if args.mode != "train_no_evaluate":
+    # Evaluation mode (runs for both train and evaluate modes)
+    logger.info(f"Loading {args.dataset} test dataset for evaluation")
+    test_dataset = utils.get_dataset(args.dataset, "test")
+    logger.info(f"Test dataset loaded with {len(test_dataset)} examples")
 
-# Run evaluation with the model
-logger.info("Starting evaluation")
-lora_path = f"models/{model_dir}" if args.mode == "evaluate" else (lora_save_name if 'lora_save_name' in locals() else args.lora_name)
-logger.info(f"Using the lora adapter: {'Base' if args.lora_name == 'Base' else lora_path}")
-results = utils.evaluate_model(
-    model, 
-    test_dataset, 
-    tokenizer, 
-    lora_path=None if args.lora_name == 'Base' else lora_path
-)
+    # Run evaluation with the model
+    logger.info("Starting evaluation")
+    lora_path = f"models/{model_dir}" if args.mode == "evaluate" else (lora_save_name if 'lora_save_name' in locals() else args.lora_name)
+    logger.info(f"Using the lora adapter: {'Base' if args.lora_name == 'Base' else lora_path}")
+    results = utils.evaluate_model(
+        model, 
+        test_dataset, 
+        tokenizer, 
+        lora_path=None if args.lora_name == 'Base' else lora_path
+    )
 
-# Create directory for results if it doesn't exist
-results_dir = f"models/{model_dir}"
-os.makedirs(results_dir, exist_ok=True)
+    # Create directory for results if it doesn't exist
+    results_dir = f"models/{model_dir}"
+    os.makedirs(results_dir, exist_ok=True)
 
-# Save detailed results to file in the model-specific directory
-results_filename = f"./{results_dir}/{args.dataset}_{timestamp}_results.json"
-with open(results_filename, "w") as f:
-    json.dump(results, f, indent=2)
-logger.info(f"Detailed results saved to {results_filename}")
+    # Save detailed results to file in the model-specific directory
+    results_filename = f"./{results_dir}/{args.dataset}_{timestamp}_results.json"
+    with open(results_filename, "w") as f:
+        json.dump(results, f, indent=2)
+    logger.info(f"Detailed results saved to {results_filename}")
 
-utils.analyze_errors(results)
+    utils.analyze_errors(results)
 
-logger.info(f"Accuracy: {results['accuracy']:.2f}%")
-utils.analyze_errors(results)
-logger.info(f"Experiment completed. Log saved to {log_file}")
+    logger.info(f"Accuracy: {results['accuracy']:.2f}%")
+    utils.analyze_errors(results)
+    logger.info(f"Experiment completed. Log saved to {log_file}")
