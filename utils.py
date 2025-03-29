@@ -89,11 +89,15 @@ def get_dataset(dataset_name, split="train", few_shot=False, k_shot=5):
         raise ValueError(f"Dataset {dataset_name} not supported")
     
 # Reward functions
-def correctness_reward_func(prompts, completions, answer, **kwargs) -> list[float]:
+def correctness_reward_func(prompts, completions, answer, debug=True, **kwargs) -> list[float]:
     responses = [completion[0]['content'] for completion in completions]
     q = prompts[0][-1]['content']
     extracted_responses = [extract_xml_answer(r) for r in responses]
     print('-'*20, f"Question:\n{q}", f"\nAnswer:\n{answer[0]}", f"\nResponse:\n{responses[0]}", f"\nExtracted:\n{extracted_responses[0]}")
+    if debug:
+        print(prompts)
+        print(completions)
+        print(answer)
     return [2.0 if r == a else 0.0 for r, a in zip(extracted_responses, answer)]
 
 def int_reward_func(completions, **kwargs) -> list[float]:
