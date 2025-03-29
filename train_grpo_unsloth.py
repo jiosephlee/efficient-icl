@@ -30,6 +30,7 @@ args = parser.parse_args()
 
 # Get the training configuration based on lora_name
 CONFIG = get_config(args.lora_name)
+CONFIG.model_name = args.model
 
 # Create experiment name to centralize logging
 timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M")
@@ -197,7 +198,6 @@ if args.mode != "train_no_evaluate":
             test_dataset, 
             tokenizer, 
             lora_path=None if args.lora_name == 'Base' else lora_path,
-            few_shot=False
         )
 
         # Create directory for results if it doesn't exist
@@ -226,9 +226,7 @@ if args.mode != "train_no_evaluate":
             model, 
             test_dataset_few_shot, 
             tokenizer, 
-            lora_path=None if args.lora_name == 'Base' else lora_path,
-            few_shot=True,
-            k_shot=CONFIG.evaluation_k_shot
+            lora_path=None if args.lora_name == 'Base' else lora_path
         )
 
         # Save few-shot detailed results

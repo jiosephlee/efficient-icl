@@ -7,13 +7,14 @@ import bitsandbytes as bnb
 @dataclass
 class TrainingConfig:
     # Model configuration
+    model_name: str = ''
     lora_name: str = "Base"  # Default to Base model
     lora_rank: int = 32
     max_seq_length: int = 2048
     target_modules: Optional[List[str]] = None
     auto_find_modules: bool = False  # New field to control automatic module finding
     lora_alpha: int = 32  # Same as lora_rank by default
-    lora_dropout = 0, # Optimized value for unsloth fast training
+    lora_dropout = 0 # Optimized value for unsloth fast training
     use_gradient_checkpointing: str = "unsloth"  # Enable long context finetuning
     random_state: int = 3407
     load_in_4bit: bool = True

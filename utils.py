@@ -73,6 +73,13 @@ def extract_hash_answer(text: str) -> str | None:
         return None
     return text.split("####")[1].strip()
 
+def compare_str_numbers(x,y):
+    # Try to convert both to float for numerical comparison
+    model_float = float(x.replace(',', ''))
+    truth_float = float(y.replace(',', ''))
+    is_correct = abs(model_float - truth_float) < 1e-8  # Account for floating point precision
+    return is_correct 
+
 def get_gsm8k_questions(split = "train", few_shot=False, k_shot=4, few_shot_template="chat") -> Dataset:
     data = load_dataset('openai/gsm8k', 'main')[split] # type: ignore
     
@@ -179,13 +186,9 @@ def evaluate_model(model, test_data, tokenizer, lora_path=None):
         try:
             model_answer = extract_xml_answer(output)
             ground_truth = item['answer']
-            
             # Convert to float and compare numerically if both are numeric
             try:
-                # Try to convert both to float for numerical comparison
-                model_float = float(model_answer.replace(',', ''))
-                truth_float = float(ground_truth.replace(',', ''))
-                is_correct = abs(model_float - truth_float) < 1e-8  # Account for floating point precision
+                is_correct = compare_str_numbers(model_answer,ground_truth)
             except (ValueError, TypeError):
                 # If conversion fails, fall back to string comparison
                 is_correct = model_answer == ground_truth

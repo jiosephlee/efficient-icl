@@ -5,7 +5,8 @@
 declare -a MODELS=(
     "Qwen/Qwen2.5-7B-Instruct Qwen2.5-7B-Instruct Base evaluate"
     "Qwen/Qwen2.5-7B-Instruct Qwen2.5-7B-Instruct v0 train"
-    "meta-llama/meta-Llama-3.1-8B-Instruct meta-Llama-3.1-8B-Instruct v0 train"
+    "Qwen/Qwen2.5-7B-Instruct Qwen2.5-7B-Instruct v0_few_shot train"
+    "Qwen/Qwen2.5-7B-Instruct Qwen2.5-7B-Instruct v0_few_shot_combined train"
 )
 
 DATASET="gsm8k"
@@ -20,7 +21,7 @@ for MODEL_CONFIG in "${MODELS[@]}"; do
         CMD+=" && "
     fi
     
-    CMD+="python train_grpo.py --model \"${MODEL_PATH}\" --mode ${MODE} --dataset ${DATASET} --lora_name ${LORA_NAME} > logs/${MODEL_NAME}_${LORA_NAME}_${MODE}_${DATASET}_${DATE}.out 2>&1"
+    CMD+="python train_grpo_unsloth.py --model \"${MODEL_PATH}\" --mode ${MODE} --dataset ${DATASET} --lora_name ${LORA_NAME} > logs/${MODEL_NAME}_${LORA_NAME}_${MODE}_${DATASET}_${DATE}.out 2>&1"
 done
 
 # Run the command chain in the background

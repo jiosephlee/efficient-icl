@@ -1,0 +1,19 @@
+2025-03-29 05:18:56,089 - INFO - Starting experiment: Qwen2.5-7B-Instruct_Base_evaluate_gsm8k_2025-03-29_05-18
+2025-03-29 05:18:56,089 - INFO - Arguments: Namespace(model='Qwen/Qwen2.5-7B-Instruct', mode='evaluate', lora_name='Base', dataset='gsm8k', checkpoint_for_continued_training=None)
+2025-03-29 05:18:56,089 - INFO - Using config: Base
+2025-03-29 05:18:56,089 - INFO - Using max_seq_length=2048, lora_rank=32
+2025-03-29 05:19:28,018 - INFO - Model loaded: Qwen/Qwen2.5-7B-Instruct
+2025-03-29 05:19:31,180 - INFO - PEFT model configured
+2025-03-29 05:19:31,180 - INFO - Loading gsm8k test dataset for evaluation
+2025-03-29 05:19:31,180 - INFO - Running zero-shot evaluation
+2025-03-29 05:19:31,856 - INFO - Test dataset loaded with 1319 examples
+2025-03-29 05:19:31,856 - INFO - Starting zero-shot evaluation
+2025-03-29 05:19:31,856 - INFO - Using the lora adapter: Base
+2025-03-29 06:52:26,009 - INFO - Zero-shot detailed results saved to ././models/Qwen2.5-7B-Instruct/Base//gsm8k_zeroshot_2025-03-29_05-18_results.json
+2025-03-29 06:52:26,009 - INFO - Zero-shot Accuracy: 0.74%
+2025-03-29 06:52:26,009 - INFO - Running few-shot evaluation
+2025-03-29 06:52:27,194 - INFO - Few-shot test dataset loaded with 1319 examples
+2025-03-29 06:52:27,194 - INFO - Starting few-shot evaluation
+2025-03-29 07:47:31,086 - INFO - Few-shot detailed results saved to ././models/Qwen2.5-7B-Instruct/Base//gsm8k_4-shot_2025-03-29_05-18_results.json
+2025-03-29 07:47:31,086 - INFO - Few-shot Accuracy: 0.78%
+2025-03-29 07:47:31,086 - INFO - Experiment completed. Log saved to ./logs/Qwen2.5-7B-Instruct_Base_evaluate_gsm8k_2025-03-29_05-18.log

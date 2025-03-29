@@ -14,7 +14,7 @@ def main():
     
     # Load results
     with open(args.results_file, 'r') as f:
-        detailed_results = json.load(f)
+        detailed_results = json.load(f)['detailed_results']
     
     # Recalculate is_correct by extracting answers from full_response
     for item in detailed_results:
@@ -27,13 +27,13 @@ def main():
         model_answer = item.get("model_answer", "").strip()
         
         # Clean up model answer (remove $ and other non-numeric characters if needed)
-        if model_answer == ground_truth:
+        if utils.compare_str_numbers(model_answer,ground_truth):
             item["is_correct"] = True
         else:
             item["is_correct"] = False
     
     # Create results dictionary in the format expected by utils functions
-    results = {'detailed_results': detailed_results}
+    results = {}
     
     # Calculate accuracy
     total = len(detailed_results)
@@ -41,6 +41,7 @@ def main():
     results['accuracy'] = (correct / total) * 100 if total > 0 else 0
     results['total_examples'] = total
     results['correct'] = correct
+    results['detailed_results'] = detailed_results
     
     # Print summary
     print("\n===== EVALUATION SUMMARY =====")
@@ -53,7 +54,7 @@ def main():
 
     # Default output path based on input filename
     base_name = os.path.splitext(args.results_file)[0]
-    output_file = f"{base_name}_metrics.json"
+    output_file = f"{base_name}.json"
     
     with open(output_file, 'w') as f:
         json.dump(results, f, indent=2)
