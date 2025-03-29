@@ -36,7 +36,6 @@ timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M")
 experiment_name = f"{args.model.split('/')[-1]}_{args.lora_name}_{args.mode}_{args.dataset}_{timestamp}"
 # Tracking model-specific weights results, and metrics
 model_dir = f"{args.model.split('/')[-1]}/{args.lora_name}/"
-os.makedirs("./models/"+model_dir, exist_ok=True)
 
 # Setup logging to the output directory
 log_file = f"./logs/{experiment_name}.log"
@@ -147,9 +146,9 @@ if args.mode == "train" or args.mode == "continue" or args.mode == 'train_no_eva
     logger.info("Training completed")
     
     # Save Lora Adapter
-    lora_save_name = CONFIG.get_model_dir()
-    logger.info(f"Saving LoRA adapter to {lora_save_name}")
-    model.save_lora(lora_save_name)
+    lora_file_path = CONFIG.get_model_dir()
+    logger.info(f"Saving LoRA adapter to {lora_file_path}")
+    model.save_lora(lora_file_path)
 
     # Model sample output
     text = tokenizer.apply_chat_template([
@@ -173,7 +172,7 @@ if args.mode == "train" or args.mode == "continue" or args.mode == 'train_no_eva
     output = model.fast_generate(
         text,
         sampling_params = sampling_params,
-        lora_request = model.load_lora(lora_save_name),
+        lora_request = model.load_lora(lora_file_path),
     )[0].outputs[0].text
 
     logger.info("Output with LoRA:")
@@ -191,7 +190,7 @@ if args.mode != "train_no_evaluate":
 
         # Run evaluation with the model
         logger.info("Starting zero-shot evaluation")
-        lora_path = CONFIG.get_model_dir() if args.mode == "evaluate" else (lora_save_name if 'lora_save_name' in locals() else args.lora_name)
+        lora_path = CONFIG.get_model_dir() if args.mode == "evaluate" else (lora_file_path if 'lora_file_path' in locals() else args.lora_name)
         logger.info(f"Using the lora adapter: {'Base' if args.lora_name == 'Base' else lora_path}")
         results = utils.evaluate_model(
             model, 
@@ -222,7 +221,7 @@ if args.mode != "train_no_evaluate":
 
         # Run few-shot evaluation with the model
         logger.info("Starting few-shot evaluation")
-        lora_path = CONFIG.get_model_dir() if args.mode == "evaluate" else (lora_save_name if 'lora_save_name' in locals() else args.lora_name)
+        lora_path = CONFIG.get_model_dir() if args.mode == "evaluate" else (lora_file_path if 'lora_file_path' in locals() else args.lora_name)
         few_shot_results = utils.evaluate_model(
             model, 
             test_dataset_few_shot, 
