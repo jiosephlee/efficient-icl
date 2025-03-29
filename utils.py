@@ -60,12 +60,12 @@ def extract_xml_answer(text: str) -> str:
         # If no answer tags, take the last line
         answer = text.strip().split("\n")[-1]
     
-    # Extract the full number, including when it's part of a larger number
-    number_matches = list(re.finditer(r'(?:^|[^\d])(\d{1,3}(?:,\d{3})*(?:\.\d+)?|\d+(?:\.\d+)?)(?:[^\d]|$)', answer.strip()))
+    # Simple pattern to match any number with optional commas and decimal points
+    number_matches = list(re.finditer(r'\d+(?:,\d+)*(?:\.\d+)?', answer))
     if number_matches:
-        # Get the last match and use capture group 1
-        last_match = number_matches[-1]
-        return last_match.group(1).replace(',', '')
+        # Get the last number found and remove any commas
+        return number_matches[-1].group(0).replace(',', '')
+    
     return answer.strip()
 
 def extract_hash_answer(text: str) -> str | None:

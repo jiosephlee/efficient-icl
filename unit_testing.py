@@ -54,6 +54,32 @@ def test_extract_xml_answer():
             "input": "<reasoning>\nYear calculation\n</reasoning>\n<answer>\nIn 2023, the value is 500\n</answer>",
             "expected": "500",
             "name": "Number with year"
+        },
+                # LaTeX format tests
+        {
+            "input": "<reasoning>\nCalculation\n</reasoning>\n<answer>\n\\[\n\\boxed{539}\n\\]\n</answer>",
+            "expected": "539",
+            "name": "Simple LaTeX boxed"
+        },
+        {
+            "input": "<reasoning>\nMath\n</reasoning>\n<answer>\n\\[\n\\boxed{1,234.56}\n\\]\n</answer>",
+            "expected": "1234.56",
+            "name": "LaTeX boxed with comma and decimal"
+        },
+        {
+            "input": "<reasoning>\nComplex\n</reasoning>\n<answer>\nThe answer is \\boxed{42} in LaTeX\n</answer>",
+            "expected": "42",
+            "name": "LaTeX boxed in sentence"
+        },
+        {
+            "input": "<reasoning>\nMultiple\n</reasoning>\n<answer>\n\\[\n\\boxed{10} + \\boxed{20} = \\boxed{30}\n\\]\n</answer>",
+            "expected": "30",
+            "name": "Multiple LaTeX boxed numbers"
+        },
+        {
+            "input": "<reasoning>\nBig number\n</reasoning>\n<answer>\n\\[\n\\boxed{1,000,000}\n\\]\n</answer>",
+            "expected": "1000000",
+            "name": "LaTeX boxed large number with commas"
         }
     ]
     
