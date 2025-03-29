@@ -1,0 +1,12 @@
+2025-03-28 03:54:18,537 - INFO - Starting experiment: Qwen2.5-7B-Instruct_Base_evaluate_gsm8k_2025-03-28_03-54
+2025-03-28 03:54:18,537 - INFO - Arguments: Namespace(model='Qwen/Qwen2.5-7B-Instruct', mode='evaluate', lora_name='Base', dataset='gsm8k', checkpoint_for_continued_training=None)
+2025-03-28 03:54:18,538 - INFO - Using max_seq_length=2048, lora_rank=32
+2025-03-28 04:01:52,285 - INFO - Model loaded: Qwen/Qwen2.5-7B-Instruct
+2025-03-28 04:01:55,445 - INFO - PEFT model configured
+2025-03-28 04:01:55,445 - INFO - Loading gsm8k test dataset for evaluation
+2025-03-28 04:01:55,997 - INFO - Test dataset loaded with 1319 examples
+2025-03-28 04:01:55,997 - INFO - Starting evaluation
+2025-03-28 04:01:55,997 - INFO - Using the lora adapter: Base
+2025-03-28 05:34:43,337 - INFO - Detailed results saved to ./models/Qwen2.5-7B-Instruct/Base//gsm8k_2025-03-28_03-54_results.json
+2025-03-28 05:34:43,338 - INFO - Accuracy: 0.68%
+2025-03-28 05:34:43,338 - INFO - Experiment completed. Log saved to ./logs/Qwen2.5-7B-Instruct_Base_evaluate_gsm8k_2025-03-28_03-54.log

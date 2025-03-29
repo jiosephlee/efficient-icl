@@ -1,0 +1,244 @@
+2025-03-28 12:08:00,416 - INFO - Starting experiment: meta-Llama-3.1-8B-Instruct_v0_train_gsm8k_2025-03-28_12-08
+2025-03-28 12:08:00,416 - INFO - Arguments: Namespace(model='meta-llama/meta-Llama-3.1-8B-Instruct', mode='train', lora_name='v0', dataset='gsm8k', checkpoint_for_continued_training=None)
+2025-03-28 12:08:00,416 - INFO - Using max_seq_length=2048, lora_rank=32
+2025-03-28 12:08:34,387 - INFO - Model loaded: meta-llama/meta-Llama-3.1-8B-Instruct
+2025-03-28 12:08:37,513 - INFO - PEFT model configured
+2025-03-28 12:08:37,513 - INFO - Loading gsm8k training dataset
+2025-03-28 12:08:38,534 - INFO - Dataset loaded with 7473 examples
+2025-03-28 12:08:38,574 - INFO - Training configuration: UnslothGRPOConfig(
+_n_gpu=1,
+accelerator_config={'split_batches': False, 'dispatch_batches': None, 'even_batches': True, 'use_seedable_sampler': True, 'non_blocking': False, 'gradient_accumulation_kwargs': None, 'use_configured_state': False},
+adafactor=False,
+adam_beta1=0.9,
+adam_beta2=0.99,
+adam_epsilon=1e-08,
+auto_find_batch_size=False,
+average_tokens_across_devices=False,
+batch_eval_metrics=False,
+beta=0.04,
+bf16=False,
+bf16_full_eval=False,
+data_seed=3407,
+dataloader_drop_last=False,
+dataloader_num_workers=0,
+dataloader_persistent_workers=False,
+dataloader_pin_memory=True,
+dataloader_prefetch_factor=None,
+ddp_backend=None,
+ddp_broadcast_buffers=None,
+ddp_bucket_cap_mb=None,
+ddp_find_unused_parameters=None,
+ddp_timeout=1800,
+debug=[],
+deepspeed=None,
+disable_tqdm=False,
+dispatch_batches=None,
+do_eval=False,
+do_predict=False,
+do_train=False,
+ds3_gather_for_generation=True,
+eval_accumulation_steps=2,
+eval_delay=0,
+eval_do_concat_batches=True,
+eval_on_start=False,
+eval_steps=None,
+eval_strategy=IntervalStrategy.NO,
+eval_use_gather_object=False,
+evaluation_strategy=None,
+fp16=False,
+fp16_backend=auto,
+fp16_full_eval=False,
+fp16_opt_level=O1,
+fsdp=[],
+fsdp_config={'min_num_params': 0, 'xla': False, 'xla_fsdp_v2': False, 'xla_fsdp_grad_ckpt': False},
+fsdp_min_num_params=0,
+fsdp_transformer_layer_cls_to_wrap=None,
+full_determinism=False,
+gradient_accumulation_steps=4,
+gradient_checkpointing=False,
+gradient_checkpointing_kwargs=None,
+greater_is_better=None,
+group_by_length=False,
+half_precision_backend=auto,
+hub_always_push=False,
+hub_model_id=None,
+hub_private_repo=None,
+hub_strategy=HubStrategy.EVERY_SAVE,
+hub_token=<HUB_TOKEN>,
+ignore_data_skip=False,
+include_for_metrics=[],
+include_inputs_for_metrics=False,
+include_num_input_tokens_seen=False,
+include_tokens_per_second=False,
+jit_mode_eval=False,
+label_names=None,
+label_smoothing_factor=0.0,
+learning_rate=5e-06,
+length_column_name=length,
+load_best_model_at_end=False,
+local_rank=0,
+log_completions=False,
+log_level=passive,
+log_level_replica=warning,
+log_on_each_node=True,
+logging_dir=./checkpoints/meta-Llama-3.1-8B-Instruct/v0/runs/Mar28_12-08-38_ShenLab,
+logging_first_step=False,
+logging_nan_inf_filter=False,
+logging_steps=1,
+logging_strategy=IntervalStrategy.STEPS,
+lr_scheduler_kwargs={},
+lr_scheduler_type=SchedulerType.COSINE,
+max_completion_length=1536,
+max_grad_norm=0.1,
+max_prompt_length=512,
+max_steps=250,
+metric_for_best_model=None,
+model_init_kwargs=None,
+mp_parameters=,
+neftune_noise_alpha=None,
+no_cuda=False,
+num_generations=8,
+num_train_epochs=3.0,
+optim=OptimizerNames.PAGED_ADAMW_8BIT,
+optim_args=None,
+optim_target_modules=None,
+output_dir=./checkpoints/meta-Llama-3.1-8B-Instruct/v0/,
+overwrite_output_dir=None,
+past_index=-1,
+per_device_eval_batch_size=4,
+per_device_train_batch_size=8,
+prediction_loss_only=False,
+push_to_hub=False,
+push_to_hub_model_id=None,
+push_to_hub_organization=None,
+push_to_hub_token=<PUSH_TO_HUB_TOKEN>,
+ray_scope=last,
+ref_model_mixup_alpha=0.9,
+ref_model_sync_steps=64,
+remove_unused_columns=False,
+report_to=[],
+restore_callback_states_from_checkpoint=False,
+resume_from_checkpoint=None,
+reward_weights=None,
+run_name=./checkpoints/meta-Llama-3.1-8B-Instruct/v0/,
+save_on_each_node=False,
+save_only_model=False,
+save_safetensors=True,
+save_steps=250,
+save_strategy=SaveStrategy.STEPS,
+save_total_limit=None,
+seed=3407,
+skip_memory_metrics=True,
+split_batches=None,
+sync_ref_model=False,
+temperature=0.9,
+tf32=None,
+torch_compile=False,
+torch_compile_backend=None,
+torch_compile_mode=None,
+torch_empty_cache_steps=250,
+torchdynamo=None,
+tp_size=0,
+tpu_metrics_debug=False,
+tpu_num_cores=None,
+unsloth_num_chunks=-1,
+use_cpu=False,
+use_ipex=False,
+use_legacy_prediction_loop=False,
+use_liger_kernel=False,
+use_mps_device=False,
+use_vllm=False,
+vllm_device=auto,
+vllm_dtype=auto,
+vllm_gpu_memory_utilization=0.9,
+vllm_max_model_len=None,
+vllm_sampling_params=None,
+warmup_ratio=0.1,
+warmup_steps=0,
+weight_decay=0.1,
+)
+2025-03-28 12:08:38,633 - INFO - Starting training
+2025-03-28 16:46:10,206 - INFO - Training completed
+2025-03-28 16:46:10,206 - INFO - Saving LoRA adapter to models/meta-Llama-3.1-8B-Instruct/v0/
+2025-03-28 16:46:14,551 - INFO - Output without LoRA:
+2025-03-28 16:46:14,551 - INFO - The calculation of pi is a complex task that involves various mathematical techniques and algorithms. One of the most common methods is the infinite series expansion of pi, which is given by the formula:
+
+π = 4 * (1 - 1/3 + 1/5 - 1/7 + 1/9 - ...)
+
+This is known as the Leibniz formula for pi. 
+
+One way to approximate pi using this formula is to sum up a finite number of terms. The more terms you add, the more accurate your approximation will be.
+
+Here's a simple Python code snippet that demonstrates how to calculate pi using the first 1000 terms:
+
+```
+import math
+
+def calculate_pi(n):
+    pi = 0
+    for i in range(n):
+        pi += ((-1) ** i) / (2 * 2 * i + 1)
+    return 4 * pi
+
+n = 1000
+pi_approximation = calculate_pi(n)
+print(pi_approximation)
+```
+
+However, this code does not provide an exact value of pi but rather an approximation.
+
+The exact value of pi is a transcendental number that goes on infinitely without a pattern. It is an irrational number and is known to be approximately 3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679...
+2025-03-28 16:46:23,098 - INFO - Output with LoRA:
+2025-03-28 16:46:23,098 - INFO - **Calculating Pi using the Monte Carlo Method**
+
+The Monte Carlo method is a numerical technique used to approximate the value of pi (π) by generating random points within a square and circle. The ratio of points that fall within the circle to the total number of points is then used to estimate the value of pi.
+
+**Python Implementation**
+```python
+import random
+import math
+
+def calculate_pi(num_points):
+    # Generate random points within a square
+    inside_circle = 0
+    for _ in range(num_points):
+        x = random.uniform(-1, 1)
+        y = random.uniform(-1, 1)
+        distance = math.sqrt(x**2 + y**2)
+        if distance <= 1:
+            inside_circle += 1
+
+    # Estimate pi using the Monte Carlo method
+    pi_estimate = (inside_circle / num_points) * 4
+    return pi_estimate
+
+# Run the simulation with a large number of points
+num_points = 1000000
+pi_estimate = calculate_pi(num_points)
+print("Estimated value of pi:", pi_estimate)
+
+# Compare with the actual value of pi
+print("Actual value of pi:", math.pi)
+```
+
+**Explanation**
+
+1.  We define a function `calculate_pi` that takes the number of random points as input.
+2.  We generate `num_points` random points within a square with side length 2, centered at the origin.
+3.  We count the number of points that fall within the unit circle (distance ≤ 1) using the `inside_circle` variable.
+4.  We estimate the value of pi using the ratio of points inside the circle to the total number of points, multiplied by 4 (since the area of the circle is πr^2 and the ratio of areas is equivalent to the ratio of points).
+5.  We run the simulation with a large number of points (e.g., 1 million) and print the estimated value of pi.
+6.  We compare the estimated value with the actual value of pi using the `math.pi` constant.
+
+**Note**: The more points used in the simulation, the more accurate the estimated value of pi will be. However, increasing the number of points also increases the computational time.
+
+**Result**
+
+Running the code above will output the estimated value of pi, which should be close to the actual value (3.14159...). The actual value of pi is approximately 3.141592653589793.
+2025-03-28 16:46:23,098 - INFO - Loading gsm8k test dataset for evaluation
+2025-03-28 16:46:23,566 - INFO - Test dataset loaded with 1319 examples
+2025-03-28 16:46:23,566 - INFO - Starting evaluation
+2025-03-28 16:46:23,566 - INFO - Using the lora adapter: models/meta-Llama-3.1-8B-Instruct/v0/
+2025-03-28 17:52:02,382 - INFO - Detailed results saved to ./models/meta-Llama-3.1-8B-Instruct/v0//gsm8k_2025-03-28_12-08_results.json
+2025-03-28 17:52:02,382 - INFO - Accuracy: 0.74%
+2025-03-28 17:52:02,382 - INFO - Experiment completed. Log saved to ./logs/meta-Llama-3.1-8B-Instruct_v0_train_gsm8k_2025-03-28_12-08.log

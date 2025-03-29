@@ -4,7 +4,7 @@
 # Each entry contains: MODEL_PATH MODEL_NAME LORA_NAME MODE
 declare -a MODELS=(
     "Qwen/Qwen2.5-7B-Instruct Qwen2.5-7B-Instruct Base evaluate"
-    "meta-llama/meta-Llama-3.1-8B-Instruct meta-Llama-3.1-8B-Instruct Base evaluate"
+    "Qwen/Qwen2.5-7B-Instruct Qwen2.5-7B-Instruct v0 train"
     "meta-llama/meta-Llama-3.1-8B-Instruct meta-Llama-3.1-8B-Instruct v0 train"
 )
 

@@ -97,7 +97,7 @@ if args.mode == "train" or args.mode == "continue":
         logging_steps = 1,
         per_device_train_batch_size = 1,
         gradient_accumulation_steps = 4, # Increase to 4 for smoother training
-        num_generations = 6, # Decrease if out of memory
+        num_generations = 8, # Decrease if out of memory
         max_prompt_length = max_prompt_length,
         max_completion_length = max_seq_length - max_prompt_length,
         # num_train_epochs = 1, # Set to 1 for a full training run
