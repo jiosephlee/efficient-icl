@@ -58,7 +58,7 @@ def extract_xml_answer(text: str) -> str:
         answer = answer.split("</answer>")[0]
     else:
         # If no answer tags, take the last line
-        answer = text.strip().split("\n")[-1]
+        answer = text.strip()
     
     # Simple pattern to match any number with optional commas and decimal points
     number_matches = list(re.finditer(r'\d+(?:,\d+)*(?:\.\d+)?', answer))

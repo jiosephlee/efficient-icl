@@ -80,6 +80,11 @@ def test_extract_xml_answer():
             "input": "<reasoning>\nBig number\n</reasoning>\n<answer>\n\\[\n\\boxed{1,000,000}\n\\]\n</answer>",
             "expected": "1000000",
             "name": "LaTeX boxed large number with commas"
+        },
+        {
+            'input':"To determine the salesman's profit, we need to calculate the total revenue from the sales and then subtract the initial cost of the sneakers.\n\nFirst, let's find out how many sneakers were sold to the department store:\n\\[\n\\text{Total sneakers} - \\text{Sneakers sold at flash sale} = 48 - 17 = 31\n\\]\n\nNext, we calculate the revenue from the flash sale:\n\\[\n\\text{Number of sneakers sold at flash sale} \\times \\text{Price per sneaker} = 17 \\times 20 = 340 \\text{ dollars}\n\\]\n\nThen, we calculate the revenue from the department store:\n\\[\n\\text{Number of sneakers sold to the department store} \\times \\text{Price per sneaker} = 31 \\times 25 = 775 \\text{ dollars}\n\\]\n\nNow, we add the revenues from both sales to find the total revenue:\n\\[\n340 \\text{ dollars} + 775 \\text{ dollars} = 1115 \\text{ dollars}\n\\]\n\nFinally, we subtract the initial cost of the sneakers from the total revenue to find the profit:\n\\[\n1115 \\text{ dollars} - 576 \\text{ dollars} = 539 \\text{ dollars}\n\\]\n\nTherefore, the salesman's profit is:\n\\[\n\\boxed{539}\n\\]",
+            'expected': '539',
+            'name':'LateX exapmle from GSKM8k output'
         }
     ]
     
