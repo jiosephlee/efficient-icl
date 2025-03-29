@@ -175,18 +175,22 @@ if args.mode == "train" or args.mode == "continue" or args.mode == 'train_no_eva
 if args.mode != "train_no_evaluate":
     # Evaluation mode (runs for both train and evaluate modes)
     logger.info(f"Loading {args.dataset} test dataset for evaluation")
-    test_dataset = utils.get_dataset(args.dataset, "test")
+    
+    # Zero-shot evaluation
+    logger.info("Running zero-shot evaluation")
+    test_dataset = utils.get_dataset(args.dataset, "test", few_shot=False)
     logger.info(f"Test dataset loaded with {len(test_dataset)} examples")
 
     # Run evaluation with the model
-    logger.info("Starting evaluation")
+    logger.info("Starting zero-shot evaluation")
     lora_path = f"models/{model_dir}" if args.mode == "evaluate" else (lora_save_name if 'lora_save_name' in locals() else args.lora_name)
     logger.info(f"Using the lora adapter: {'Base' if args.lora_name == 'Base' else lora_path}")
     results = utils.evaluate_model(
         model, 
         test_dataset, 
         tokenizer, 
-        lora_path=None if args.lora_name == 'Base' else lora_path
+        lora_path=None if args.lora_name == 'Base' else lora_path,
+        few_shot=False
     )
 
     # Create directory for results if it doesn't exist
@@ -194,13 +198,37 @@ if args.mode != "train_no_evaluate":
     os.makedirs(results_dir, exist_ok=True)
 
     # Save detailed results to file in the model-specific directory
-    results_filename = f"./{results_dir}/{args.dataset}_{timestamp}_results.json"
+    results_filename = f"./{results_dir}/{args.dataset}_zeroshot_{timestamp}_results.json"
     with open(results_filename, "w") as f:
         json.dump(results, f, indent=2)
-    logger.info(f"Detailed results saved to {results_filename}")
+    logger.info(f"Zero-shot detailed results saved to {results_filename}")
 
     utils.analyze_errors(results)
+    logger.info(f"Zero-shot Accuracy: {results['accuracy']:.2f}%")
+    
+    # Few-shot evaluation
+    logger.info("Running few-shot evaluation")
+    test_dataset_few_shot = utils.get_dataset(args.dataset, "test", few_shot=True, k_shot=5)
+    logger.info(f"Few-shot test dataset loaded with {len(test_dataset_few_shot)} examples")
 
-    logger.info(f"Accuracy: {results['accuracy']:.2f}%")
-    utils.analyze_errors(results)
+    # Run few-shot evaluation with the model
+    logger.info("Starting few-shot evaluation")
+    few_shot_results = utils.evaluate_model(
+        model, 
+        test_dataset_few_shot, 
+        tokenizer, 
+        lora_path=None if args.lora_name == 'Base' else lora_path,
+        few_shot=True,
+        k_shot=5
+    )
+
+    # Save few-shot detailed results
+    few_shot_results_filename = f"./{results_dir}/{args.dataset}_5-shot_{timestamp}_results.json"
+    with open(few_shot_results_filename, "w") as f:
+        json.dump(few_shot_results, f, indent=2)
+    logger.info(f"Few-shot detailed results saved to {few_shot_results_filename}")
+
+    utils.analyze_errors(few_shot_results)
+    logger.info(f"Few-shot Accuracy: {few_shot_results['accuracy']:.2f}%")
+    
     logger.info(f"Experiment completed. Log saved to {log_file}")
