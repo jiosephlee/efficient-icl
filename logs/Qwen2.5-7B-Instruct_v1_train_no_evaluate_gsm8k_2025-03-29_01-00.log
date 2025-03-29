@@ -1,11 +1,11 @@
-2025-03-28 20:42:15,422 - INFO - Starting experiment: Qwen2.5-7B-Instruct_v1_train_gsm8k_2025-03-28_20-42
-2025-03-28 20:42:15,422 - INFO - Arguments: Namespace(model='Qwen/Qwen2.5-7B-Instruct', mode='train', lora_name='v1', dataset='gsm8k', checkpoint_for_continued_training=None)
-2025-03-28 20:42:15,422 - INFO - Using max_seq_length=2048, lora_rank=32
-2025-03-28 20:42:48,521 - INFO - Model loaded: Qwen/Qwen2.5-7B-Instruct
-2025-03-28 20:42:51,732 - INFO - PEFT model configured
-2025-03-28 20:42:51,732 - INFO - Loading gsm8k training dataset
-2025-03-28 20:42:52,380 - INFO - Dataset loaded with 7473 examples
-2025-03-28 20:42:52,419 - INFO - Training configuration: UnslothGRPOConfig(
+2025-03-29 01:00:54,419 - INFO - Starting experiment: Qwen2.5-7B-Instruct_v1_train_no_evaluate_gsm8k_2025-03-29_01-00
+2025-03-29 01:00:54,419 - INFO - Arguments: Namespace(model='Qwen/Qwen2.5-7B-Instruct', mode='train_no_evaluate', lora_name='v1', dataset='gsm8k', checkpoint_for_continued_training=None)
+2025-03-29 01:00:54,419 - INFO - Using max_seq_length=2048, lora_rank=32
+2025-03-29 01:01:28,476 - INFO - Model loaded: Qwen/Qwen2.5-7B-Instruct
+2025-03-29 01:01:31,711 - INFO - PEFT model configured
+2025-03-29 01:01:31,711 - INFO - Loading gsm8k training dataset
+2025-03-29 01:01:33,922 - INFO - Dataset loaded with 7473 examples
+2025-03-29 01:01:33,962 - INFO - Training configuration: UnslothGRPOConfig(
 _n_gpu=1,
 accelerator_config={'split_batches': False, 'dispatch_batches': None, 'even_batches': True, 'use_seedable_sampler': True, 'non_blocking': False, 'gradient_accumulation_kwargs': None, 'use_configured_state': False},
 adafactor=False,
@@ -81,7 +81,7 @@ log_completions=False,
 log_level=passive,
 log_level_replica=warning,
 log_on_each_node=True,
-logging_dir=./checkpoints/Qwen2.5-7B-Instruct/v1/runs/Mar28_20-42-52_ShenLab,
+logging_dir=./checkpoints/Qwen2.5-7B-Instruct/v1/runs/Mar29_01-01-33_ShenLab,
 logging_first_step=False,
 logging_nan_inf_filter=False,
 logging_steps=1,
@@ -157,11 +157,11 @@ warmup_ratio=0.1,
 warmup_steps=0,
 weight_decay=0.1,
 )
-2025-03-28 20:42:52,474 - INFO - Starting training
-2025-03-28 20:44:44,456 - INFO - Training completed
-2025-03-28 20:44:44,456 - INFO - Saving LoRA adapter to models/Qwen2.5-7B-Instruct/v1/
-2025-03-28 20:44:48,569 - INFO - Output without LoRA:
-2025-03-28 20:44:48,569 - INFO - Calculating pi to a high degree of precision is a complex task that typically requires advanced computational methods or specialized software. However, for a simple approximation, we can use various algorithms or series. A well-known method is the Leibniz formula for π:
+2025-03-29 01:01:34,018 - INFO - Starting training
+2025-03-29 01:03:26,221 - INFO - Training completed
+2025-03-29 01:03:26,221 - INFO - Saving LoRA adapter to models/Qwen2.5-7B-Instruct/v1/
+2025-03-29 01:03:30,393 - INFO - Output without LoRA:
+2025-03-29 01:03:30,393 - INFO - Calculating pi to a high degree of precision is a complex task that typically requires advanced computational methods or specialized software. However, for a simple approximation, we can use various algorithms or series. A well-known method is the Leibniz formula for π:
 
 \[
 \pi = 4 \times (1 - \frac{1}{3} + \frac{1}{5} - \frac{1}{7} + \frac{1}{9} - \ldots)
@@ -176,8 +176,8 @@ Given the request for a calculation rather than a known approximation, a simple 
 <answer>
 The value of π is approximately 3.14159, but calculating it precisely requires specific algorithms or computational tools.
 </answer>
-2025-03-28 20:44:55,966 - INFO - Output with LoRA:
-2025-03-28 20:44:55,966 - INFO - Calculating pi to an exact value is not possible with finite operations because pi is an irrational number, meaning it has an infinite number of non-repeating decimal places. However, we can approximate pi to a desired degree of accuracy using various algorithms and series.
+2025-03-29 01:03:37,802 - INFO - Output with LoRA:
+2025-03-29 01:03:37,802 - INFO - Calculating pi to an exact value is not possible with finite operations because pi is an irrational number, meaning it has an infinite number of non-repeating decimal places. However, we can approximate pi to a desired degree of accuracy using various algorithms and series.
 
 A common method to approximate pi is through the use of the Leibniz formula for π, which is an infinite series:
 \[ \pi = 4 \times (1 - \frac{1}{3} + \frac{1}{5} - \frac{1}{7} + \frac{1}{9} - \ldots) \]
@@ -196,10 +196,3 @@ For practical purposes, pi is often approximated as 3.14159 or 3.14 for most cal
 <answer>
 Pi is an irrational number and cannot be calculated exactly, but it can be approximated to any desired degree of accuracy using various algorithms. For most practical purposes, pi is approximated as 3.14159.
 </answer>
-2025-03-28 20:44:55,966 - INFO - Loading gsm8k test dataset for evaluation
-2025-03-28 20:44:56,403 - INFO - Test dataset loaded with 1319 examples
-2025-03-28 20:44:56,404 - INFO - Starting evaluation
-2025-03-28 20:44:56,404 - INFO - Using the lora adapter: models/Qwen2.5-7B-Instruct/v1/
-2025-03-28 22:39:12,066 - INFO - Detailed results saved to ./models/Qwen2.5-7B-Instruct/v1//gsm8k_2025-03-28_20-42_results.json
-2025-03-28 22:39:12,067 - INFO - Accuracy: 0.66%
-2025-03-28 22:39:12,067 - INFO - Experiment completed. Log saved to ./logs/Qwen2.5-7B-Instruct_v1_train_gsm8k_2025-03-28_20-42.log

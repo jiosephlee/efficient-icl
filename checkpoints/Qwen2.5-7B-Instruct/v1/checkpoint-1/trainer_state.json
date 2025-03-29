@@ -10,19 +10,19 @@
   "is_world_process_zero": true,
   "log_history": [
     {
-      "completion_length": 372.625,
+      "completion_length": 238.84375,
       "epoch": 0.0005352602703064365,
-      "grad_norm": 0.4004910886287689,
+      "grad_norm": 1.8368771076202393,
       "kl": 0.0,
       "learning_rate": 5e-06,
       "loss": -0.0,
-      "reward": 1.1247187405824661,
-      "reward_std": 0.5206284448504448,
+      "reward": 2.1584061980247498,
+      "reward_std": 0.885904461145401,
       "rewards/correctness_reward_func": 1.375,
-      "rewards/int_reward_func": 0.5,
+      "rewards/int_reward_func": 0.484375,
       "rewards/soft_format_reward_func": 0.0,
-      "rewards/strict_format_reward_func": 0.0,
-      "rewards/xmlcount_reward_func": -0.7502812147140503,
+      "rewards/strict_format_reward_func": 0.0625,
+      "rewards/xmlcount_reward_func": 0.23653124272823334,
       "step": 1
     }
   ],

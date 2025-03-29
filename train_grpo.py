@@ -22,6 +22,8 @@ parser.add_argument("--mode", type=str, choices=["train", "train_no_evaluate", "
 parser.add_argument("--lora_name", type=str, help="Name of the LoRA adapter to save or load")
 parser.add_argument("--dataset", type=str, default="gsm8k",
                     help="Dataset to train or evaluate on (default: gsm8k)")
+parser.add_argument("--few_shot", type=int,
+                    help="Number of shots to include in prompt when training. Not using this flag means zero-shot.")
 parser.add_argument("--checkpoint_for_continued_training", type=str, help="Path to checkpoint for continuing training")
 
 args = parser.parse_args()
@@ -31,7 +33,7 @@ timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M")
 experiment_name = f"{args.model.split('/')[-1]}_{args.lora_name}_{args.mode}_{args.dataset}_{timestamp}"
 # Tracking model-specific weights results, and metrics
 model_dir = f"{args.model.split('/')[-1]}/{args.lora_name}/"
-os.makedirs(model_dir, exist_ok=True)
+os.makedirs("./models/"+model_dir, exist_ok=True)
 
 # Setup logging to the output directory
 log_file = f"./logs/{experiment_name}.log"
@@ -79,9 +81,9 @@ model = FastLanguageModel.get_peft_model(
 )
 logger.info("PEFT model configured")
 
-if args.mode == "train" or args.mode == "continue":
+if args.mode == "train" or args.mode == "continue" or args.mode == 'train_no_evaluate':
     logger.info(f"Loading {args.dataset} training dataset")
-    dataset = utils.get_dataset(args.dataset, "train")
+    dataset = utils.get_dataset(args.dataset, "train", few_shot=(args.few_shot is not None) or (args.few_shot > 0), k_shot=args.few_shot)
     logger.info(f"Dataset loaded with {len(dataset)} examples")
 
     max_prompt_length = 512
