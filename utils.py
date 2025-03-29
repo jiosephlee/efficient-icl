@@ -4,6 +4,7 @@ import re
 from datasets import load_dataset, Dataset
 import re
 
+
 # Prompts
 PROMPTS = {
     "v0": {
@@ -73,7 +74,7 @@ def extract_hash_answer(text: str) -> str | None:
         return None
     return text.split("####")[1].strip()
 
-def get_gsm8k_questions(split = "train", few_shot=False, k_shot=5, few_shot_template="chat") -> Dataset:
+def get_gsm8k_questions(split = "train", few_shot=False, k_shot=4, few_shot_template="chat") -> Dataset:
     data = load_dataset('openai/gsm8k', 'main')[split] # type: ignore
     
     if few_shot:
@@ -136,7 +137,7 @@ def get_gsm8k_questions(split = "train", few_shot=False, k_shot=5, few_shot_temp
     return data # type: ignore
 
 # Function to get dataset based on argument
-def get_dataset(dataset_name, split="train", few_shot=False, k_shot=5, few_shot_template="chat"):
+def get_dataset(dataset_name, split="train", few_shot=False, k_shot=4, few_shot_template="chat"):
     if dataset_name == "gsm8k":
         return get_gsm8k_questions(split, few_shot, k_shot, few_shot_template)
     else:
