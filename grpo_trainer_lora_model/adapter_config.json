@@ -1,7 +1,7 @@
 {
   "alpha_pattern": {},
   "auto_mapping": null,
-  "base_model_name_or_path": "unsloth/meta-llama-3.1-8b-instruct-unsloth-bnb-4bit",
+  "base_model_name_or_path": "unsloth/qwen2.5-7b-instruct-unsloth-bnb-4bit",
   "bias": "none",
   "corda_config": null,
   "eva_config": null,
@@ -24,11 +24,11 @@
   "rank_pattern": {},
   "revision": null,
   "target_modules": [
-    "down_proj",
-    "o_proj",
     "k_proj",
-    "up_proj",
     "q_proj",
+    "o_proj",
+    "up_proj",
+    "down_proj",
     "v_proj",
     "gate_proj"
   ],

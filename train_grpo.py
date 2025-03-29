@@ -101,7 +101,7 @@ if args.mode == "train" or args.mode == "continue":
         max_prompt_length = max_prompt_length,
         max_completion_length = max_seq_length - max_prompt_length,
         # num_train_epochs = 1, # Set to 1 for a full training run
-        max_steps = 250,
+        max_steps = 1,
         save_steps = 250,
         max_grad_norm = 0.1,
         report_to = "none", # Can use Weights & Biases
