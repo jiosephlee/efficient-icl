@@ -12,6 +12,7 @@ import argparse
 import datetime
 import logging
 import utils
+import rewards
 
 # Parse command line arguments
 parser = argparse.ArgumentParser(description="GRPO training and evaluation script")
@@ -24,6 +25,8 @@ parser.add_argument("--dataset", type=str, default="gsm8k",
                     help="Dataset to train or evaluate on (default: gsm8k)")
 parser.add_argument("--few_shot", type=int,
                     help="Number of shots to include in prompt when training. Not using this flag means zero-shot.")
+parser.add_argument("--few_shot_template", type=str, default="chat",
+                    help="Template to use for few-shot examples. Options: 'chat' (default), 'combined'")
 parser.add_argument("--checkpoint_for_continued_training", type=str, help="Path to checkpoint for continuing training")
 
 args = parser.parse_args()
@@ -83,7 +86,10 @@ logger.info("PEFT model configured")
 
 if args.mode == "train" or args.mode == "continue" or args.mode == 'train_no_evaluate':
     logger.info(f"Loading {args.dataset} training dataset")
-    dataset = utils.get_dataset(args.dataset, "train", few_shot=(args.few_shot is not None) or (args.few_shot > 0), k_shot=args.few_shot)
+    dataset = utils.get_dataset(args.dataset, "train", 
+                                few_shot=(args.few_shot is not None) or (args.few_shot > 0), 
+                                k_shot=args.few_shot, 
+                                few_shot_template=args.few_shot_template)
     logger.info(f"Dataset loaded with {len(dataset)} examples")
 
     max_prompt_length = 512
@@ -115,11 +121,11 @@ if args.mode == "train" or args.mode == "continue" or args.mode == 'train_no_eva
         model = model,
         processing_class = tokenizer,
         reward_funcs = [
-            utils.xmlcount_reward_func,
-            utils.soft_format_reward_func,
-            utils.strict_format_reward_func,
-            utils.int_reward_func,
-            utils.correctness_reward_func,
+            rewards.xmlcount_reward_func,
+            rewards.soft_format_reward_func,
+            rewards.strict_format_reward_func,
+            rewards.int_reward_func,
+            rewards.correctness_reward_func,
         ],
         args = training_args,
         train_dataset = dataset,
@@ -178,7 +184,7 @@ if args.mode != "train_no_evaluate":
     
     # Zero-shot evaluation
     logger.info("Running zero-shot evaluation")
-    test_dataset = utils.get_dataset(args.dataset, "test", few_shot=False)
+    test_dataset = utils.get_dataset(args.dataset, "test", few_shot=False, few_shot_template=args.few_shot_template)
     logger.info(f"Test dataset loaded with {len(test_dataset)} examples")
 
     # Run evaluation with the model
@@ -208,7 +214,7 @@ if args.mode != "train_no_evaluate":
     
     # Few-shot evaluation
     logger.info("Running few-shot evaluation")
-    test_dataset_few_shot = utils.get_dataset(args.dataset, "test", few_shot=True, k_shot=5)
+    test_dataset_few_shot = utils.get_dataset(args.dataset, "test", few_shot=True, k_shot=5, few_shot_template=args.few_shot_template)
     logger.info(f"Few-shot test dataset loaded with {len(test_dataset_few_shot)} examples")
 
     # Run few-shot evaluation with the model
