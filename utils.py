@@ -5,7 +5,9 @@ from datasets import load_dataset, Dataset
 import re
 
 # Prompts
-SYSTEM_PROMPT = """
+PROMPTS = {
+    "v0": {
+        "SYSTEM_PROMPT": """
 Respond in the following format:
 <reasoning>
 ...
@@ -13,9 +15,8 @@ Respond in the following format:
 <answer>
 ...
 </answer>
-"""
-
-XML_COT_FORMAT = """\
+""",
+        "XML_COT_FORMAT": """\
 <reasoning>
 {reasoning}
 </reasoning>
@@ -23,6 +24,32 @@ XML_COT_FORMAT = """\
 {answer}
 </answer>
 """
+    },
+    "v1": {
+        "SYSTEM_PROMPT": """
+Respond in the following format:
+<think>
+...
+</think>
+<answer>
+...
+</answer>
+""",
+        "XML_COT_FORMAT": """\
+<think>
+{reasoning}
+</think>
+<answer>
+{answer}
+</answer>
+"""
+    }
+}
+
+# Default to the latest version for backward compatibility
+SYSTEM_PROMPT = PROMPTS["v0"]["SYSTEM_PROMPT"]
+XML_COT_FORMAT = PROMPTS["v0"]["XML_COT_FORMAT"]
+
 def extract_xml_answer(text: str) -> str:
     # Try to extract from XML tags
     if "<answer>" in text and "</answer>" in text:
@@ -32,10 +59,13 @@ def extract_xml_answer(text: str) -> str:
         # If no answer tags, take the last line
         answer = text.strip().split("\n")[-1]
     
-    # Extract number using regex
-    number_match = re.search(r'\d+(?:\.\d+)?', answer.strip())
-    if number_match:
-        return number_match.group(0)
+    # Extract the last number in the answer using regex that handles commas in numbers
+    number_matches = list(re.finditer(r'\d{1,3}(?:,\d{3})*(?:\.\d+)?|\d+(?:\.\d+)?', answer.strip()))
+    if number_matches:
+        # Get the last match
+        last_match = number_matches[-1]
+        # Remove commas from the number
+        return last_match.group(0).replace(',', '')
     return answer.strip()
 
 def extract_hash_answer(text: str) -> str | None:
@@ -43,7 +73,7 @@ def extract_hash_answer(text: str) -> str | None:
         return None
     return text.split("####")[1].strip()
 
-def get_gsm8k_questions(split = "train", few_shot=False, k_shot=5) -> Dataset:
+def get_gsm8k_questions(split = "train", few_shot=False, k_shot=5, few_shot_template="chat") -> Dataset:
     data = load_dataset('openai/gsm8k', 'main')[split] # type: ignore
     
     if few_shot:
@@ -52,23 +82,47 @@ def get_gsm8k_questions(split = "train", few_shot=False, k_shot=5) -> Dataset:
         # Sample k random examples
         few_shot_examples = train_data.shuffle(seed=42).select(range(k_shot)) # type: ignore
         
-        # Process the data with few-shot examples
-        data = data.map(lambda x: { # type: ignore
-            'prompt': [
-                {'role': 'system', 'content': SYSTEM_PROMPT},
-                # Include few-shot examples in the prompt
-                *sum([[
-                    {'role': 'user', 'content': example['question']},
-                    {'role': 'assistant', 'content': XML_COT_FORMAT.format(
-                        reasoning=example['answer'].split('####')[0].strip(),
-                        answer=extract_hash_answer(example['answer'])
-                    )}
-                ] for example in few_shot_examples], []),
-                # Add the actual question
-                {'role': 'user', 'content': x['question']}
-            ],
-            'answer': extract_hash_answer(x['answer'])
-        }) # type: ignore
+        if few_shot_template == "combined":
+            # Create a combined few-shot prompt with all examples concatenated
+            few_shot_prompt = ""
+            for i, example in enumerate(few_shot_examples):
+                few_shot_prompt += f"### Example {i+1}\n"
+                few_shot_prompt += f"Question: {example['question']}\n\n"
+                few_shot_prompt += XML_COT_FORMAT.format(
+                    reasoning=example['answer'].split('####')[0].strip(),
+                    answer=extract_hash_answer(example['answer'])
+                )
+                few_shot_prompt += "\n\n"
+            
+            # Add separator before the actual question
+            few_shot_prompt += "Now, solve the following problem:\n\nQuestion: "
+            
+            # Process the data with combined few-shot examples
+            data = data.map(lambda x: { # type: ignore
+                'prompt': [
+                    {'role': 'system', 'content': SYSTEM_PROMPT},
+                    {'role': 'user', 'content': few_shot_prompt + x['question']}
+                ],
+                'answer': extract_hash_answer(x['answer'])
+            }) # type: ignore
+        else:  # Default to chat format
+            # Process the data with few-shot examples in chat format
+            data = data.map(lambda x: { # type: ignore
+                'prompt': [
+                    {'role': 'system', 'content': SYSTEM_PROMPT},
+                    # Include few-shot examples in the prompt
+                    *sum([[
+                        {'role': 'user', 'content': example['question']},
+                        {'role': 'assistant', 'content': XML_COT_FORMAT.format(
+                            reasoning=example['answer'].split('####')[0].strip(),
+                            answer=extract_hash_answer(example['answer'])
+                        )}
+                    ] for example in few_shot_examples], []),
+                    # Add the actual question
+                    {'role': 'user', 'content': x['question']}
+                ],
+                'answer': extract_hash_answer(x['answer'])
+            }) # type: ignore
     else:
         # Standard processing without few-shot examples
         data = data.map(lambda x: { # type: ignore
@@ -164,8 +218,6 @@ def evaluate_model(model, test_data, tokenizer, lora_path=None, few_shot=False, 
             tokenize=False, 
             add_generation_prompt=True
         )
-        print(item['prompt'][0])
-        break
         # Generate response
         output = model.fast_generate(
             [prompt],
