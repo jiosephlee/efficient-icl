@@ -60,13 +60,12 @@ def extract_xml_answer(text: str) -> str:
         # If no answer tags, take the last line
         answer = text.strip().split("\n")[-1]
     
-    # Extract the last number in the answer using regex that handles commas in numbers
-    number_matches = list(re.finditer(r'\d{1,3}(?:,\d{3})*(?:\.\d+)?|\d+(?:\.\d+)?', answer.strip()))
+    # Extract the full number, including when it's part of a larger number
+    number_matches = list(re.finditer(r'(?:^|[^\d])(\d{1,3}(?:,\d{3})*(?:\.\d+)?|\d+(?:\.\d+)?)(?:[^\d]|$)', answer.strip()))
     if number_matches:
-        # Get the last match
+        # Get the last match and use capture group 1
         last_match = number_matches[-1]
-        # Remove commas from the number
-        return last_match.group(0).replace(',', '')
+        return last_match.group(1).replace(',', '')
     return answer.strip()
 
 def extract_hash_answer(text: str) -> str | None:
@@ -181,7 +180,15 @@ def evaluate_model(model, test_data, tokenizer, lora_path=None):
             model_answer = extract_xml_answer(output)
             ground_truth = item['answer']
             
-            is_correct = model_answer == ground_truth
+            # Convert to float and compare numerically if both are numeric
+            try:
+                # Try to convert both to float for numerical comparison
+                model_float = float(model_answer.replace(',', ''))
+                truth_float = float(ground_truth.replace(',', ''))
+                is_correct = abs(model_float - truth_float) < 1e-8  # Account for floating point precision
+            except (ValueError, TypeError):
+                # If conversion fails, fall back to string comparison
+                is_correct = model_answer == ground_truth
             if is_correct:
                 correct += 1
             
