@@ -139,8 +139,7 @@ def xmlcount_reward_func(completions, **kwargs) -> list[float]:
 
 
 # Evaluate on GSM8K test set
-
-def evaluate_model(model, test_data, tokenizer, lora_path=None):
+def evaluate_model(model, test_data, tokenizer, lora_path=None, few_shot=False, k_shot=5):
     correct = 0
     total = 0
     results = []
@@ -159,12 +158,14 @@ def evaluate_model(model, test_data, tokenizer, lora_path=None):
     
     # Process each question in the test set
     for item in tqdm(test_data):
-        # Format the prompt
-        prompt = tokenizer.apply_chat_template([
-            {"role": "system", "content": SYSTEM_PROMPT},
-            {"role": "user", "content": item['question']}
-        ], tokenize=False, add_generation_prompt=True)
-        
+        # The prompt is already formatted in the dataset
+        prompt = tokenizer.apply_chat_template(
+            item['prompt'][0],
+            tokenize=False, 
+            add_generation_prompt=True
+        )
+        print(item['prompt'][0])
+        break
         # Generate response
         output = model.fast_generate(
             [prompt],
@@ -184,6 +185,7 @@ def evaluate_model(model, test_data, tokenizer, lora_path=None):
             # Save detailed results
             results.append({
                 'question': item['question'],
+                'prompt': item['prompt'][0],  # The last message is the question
                 'ground_truth': ground_truth,
                 'model_answer': model_answer,
                 'full_response': output,
@@ -194,6 +196,7 @@ def evaluate_model(model, test_data, tokenizer, lora_path=None):
             print(f"Error processing answer: {e}")
             results.append({
                 'question': item['question'],
+                'prompt': item['prompt'][0],  
                 'ground_truth': item['answer'],
                 'model_answer': "ERROR",
                 'full_response': output,
