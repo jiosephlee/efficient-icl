@@ -56,12 +56,7 @@ class TrainingConfig:
         "int_reward_func",
         "correctness_reward_func"
     ])
-    
-    # Evaluation parameters
-    evaluate_zero_shot: bool = True
-    evaluate_few_shot: bool = True
-    evaluation_k_shot: int = 4
-    
+
     # Inference parameters
     sampling_temperature: float = 0.8
     sampling_top_p: float = 0.95
@@ -123,14 +118,22 @@ DEFAULT_CONFIGS = {
         prompt_version="v0",
         few_shot=False
     ),
-    
+    "Base_v1": TrainingConfig(
+        lora_name="Base",
+        prompt_version="v1",
+        few_shot=False,
+    ),
+    "Base_v2": TrainingConfig(
+        lora_name="Base",
+        prompt_version="v2",
+        few_shot=False,
+    ),
     "v0": TrainingConfig(
         lora_name="v0",
         prompt_version="v0",
         few_shot=False,
         max_steps=250
     ),
-    
     "v0_few_shot_chat": TrainingConfig(
         lora_name="v0_few_shot_chat",
         prompt_version="v0",
@@ -151,13 +154,19 @@ DEFAULT_CONFIGS = {
         lora_name="v1_few_shot_chat",
         prompt_version="v1",
         few_shot=True,
-        max_steps=250
+        max_steps=300,
+        num_generations=12,
+        per_device_train_batch_size=12,
+        gradient_accumulation_steps=4
     ),
     "v2_few_shot_chat": TrainingConfig(
         lora_name="v2_few_shot_chat",
         prompt_version="v2",
         few_shot=True,
-        max_steps=250
+        max_steps=300,
+        num_generations=12,
+        per_device_train_batch_size=12,
+        gradient_accumulation_steps=4
     ),
 }
 

@@ -25,6 +25,9 @@ parser.add_argument("--lora_name", type=str, help="Name of the LoRA adapter to s
 parser.add_argument("--dataset", type=str, default="gsm8k",
                     help="Dataset to evaluate on (default: gsm8k)")
 parser.add_argument("--checkpoint_for_continued_training", type=str, help="Path to checkpoint for continuing training")
+parser.add_argument("--eval_zero_shot", action="store_true", help="Whether to evaluate in zero-shot setting")
+parser.add_argument("--eval_few_shot", action="store_true", help="Whether to evaluate in few-shot setting")
+parser.add_argument("--eval_k_shot", type=int, default=4, help="Number of examples to use for few-shot evaluation")
 
 args = parser.parse_args()
 
@@ -120,7 +123,7 @@ if args.mode == "train" or args.mode == "continue" or args.mode == 'train_no_eva
         save_steps = CONFIG.save_steps,
         max_grad_norm = CONFIG.max_grad_norm,
         # scale_rewards = CONFIG.scale_rewards,
-        report_to = "none", # Can use Weights & Biases
+        report_to = "wandb", # Can use Weights & Biases
         output_dir = CONFIG.get_checkpoint_dir(),
     )
     logger.info(f"Training configuration: {training_args}")
@@ -193,7 +196,7 @@ if args.mode != "train_no_evaluate":
     logger.info(f"Loading {args.dataset} test dataset for evaluation")
     
     # Zero-shot evaluation
-    if CONFIG.evaluate_zero_shot:
+    if args.eval_zero_shot:
         logger.info("Running zero-shot evaluation")
         test_dataset = utils.get_dataset(args.dataset, 
                                          "test", 
@@ -227,13 +230,13 @@ if args.mode != "train_no_evaluate":
         logger.info(f"Zero-shot Accuracy: {results['accuracy']:.2f}%")
     
     # Few-shot evaluation
-    if CONFIG.evaluate_few_shot:
+    if args.eval_few_shot:
         logger.info("Running few-shot evaluation")
         test_dataset_few_shot = utils.get_dataset(args.dataset, 
                                                   "test", 
                                                   CONFIG.prompt_version,
                                                   few_shot=True, 
-                                                  k_shot=CONFIG.evaluation_k_shot, 
+                                                  k_shot=args.eval_k_shot, 
                                                   few_shot_template=CONFIG.few_shot_template)
         logger.info(f"Few-shot test dataset loaded with {len(test_dataset_few_shot)} examples")
 
@@ -248,7 +251,7 @@ if args.mode != "train_no_evaluate":
         )
 
         # Save few-shot detailed results
-        few_shot_results_filename = f"./{results_dir}/{args.dataset}_{CONFIG.evaluation_k_shot}-shot_{timestamp}_results.json"
+        few_shot_results_filename = f"./{results_dir}/{args.dataset}_{args.eval_k_shot}-shot_{timestamp}_results.json"
         with open(few_shot_results_filename, "w") as f:
             json.dump(few_shot_results, f, indent=2)
         logger.info(f"Few-shot detailed results saved to {few_shot_results_filename}")
