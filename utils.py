@@ -24,7 +24,8 @@ Respond in the following format:
 <answer>
 {answer}
 </answer>
-"""
+""",
+    "FEW_SHOT_INSTRUCTION":"""Now, solve the following problem"""
     },
     "v1": {
         "SYSTEM_PROMPT": """
@@ -43,13 +44,33 @@ Respond in the following format:
 <answer>
 {answer}
 </answer>
-"""
+""",
+    "FEW_SHOT_INSTRUCTION":"""Now, solve the following problem. Let's think step by step"""
+    },
+    "v2": {
+        "SYSTEM_PROMPT": """
+Respond in the following format:
+<think>
+...
+</think>
+<answer>
+...
+</answer>
+""",
+        "XML_COT_FORMAT": """\
+<think>
+{reasoning}
+</think>
+<answer>
+{answer}
+</answer>
+""",
+    "FEW_SHOT_INSTRUCTION":"""Now, solve the following problem. Understand the problem first and analyze any of the examples if they're relevant. Then, solve it step by step"""
     }
 }
 
 # Default to the latest version for backward compatibility
-SYSTEM_PROMPT = PROMPTS["v0"]["SYSTEM_PROMPT"]
-XML_COT_FORMAT = PROMPTS["v0"]["XML_COT_FORMAT"]
+
 
 def extract_xml_answer(text: str) -> str:
     # Try to extract from XML tags
@@ -80,9 +101,11 @@ def compare_str_numbers(x,y):
     is_correct = abs(model_float - truth_float) < 1e-8  # Account for floating point precision
     return is_correct 
 
-def get_gsm8k_questions(split = "train", few_shot=False, k_shot=4, few_shot_template="chat") -> Dataset:
+def get_gsm8k_questions(split = "train", prompt_version = "v0", few_shot=False, k_shot=4, few_shot_template="chat") -> Dataset:
     data = load_dataset('openai/gsm8k', 'main')[split] # type: ignore
-    
+    SYSTEM_PROMPT = PROMPTS[prompt_version]["SYSTEM_PROMPT"]
+    XML_COT_FORMAT = PROMPTS[prompt_version]["XML_COT_FORMAT"]
+    FEW_SHOT_INSTRUCTION = PROMPTS[prompt_version]['FEW_SHOT_INSTRUCTION']
     if few_shot:
         # Get k random examples from training set for few-shot learning
         train_data = load_dataset('openai/gsm8k', 'main')["train"] # type: ignore
@@ -102,7 +125,7 @@ def get_gsm8k_questions(split = "train", few_shot=False, k_shot=4, few_shot_temp
                 few_shot_prompt += "\n\n"
             
             # Add separator before the actual question
-            few_shot_prompt += "Now, solve the following problem:\n\nQuestion: "
+            few_shot_prompt += f"{FEW_SHOT_INSTRUCTION}:\n\nQuestion: "
             
             # Process the data with combined few-shot examples
             data = data.map(lambda x: { # type: ignore
@@ -143,9 +166,9 @@ def get_gsm8k_questions(split = "train", few_shot=False, k_shot=4, few_shot_temp
     return data # type: ignore
 
 # Function to get dataset based on argument
-def get_dataset(dataset_name, split="train", few_shot=False, k_shot=4, few_shot_template="chat"):
+def get_dataset(dataset_name, split="train", prompt_version = "v0", few_shot=False, k_shot=4, few_shot_template="chat"):
     if dataset_name == "gsm8k":
-        return get_gsm8k_questions(split, few_shot, k_shot, few_shot_template)
+        return get_gsm8k_questions(split, prompt_version, few_shot, k_shot, few_shot_template)
     else:
         raise ValueError(f"Dataset {dataset_name} not supported")
 

@@ -38,14 +38,14 @@ class TrainingConfig:
     warmup_ratio: float = 0.1
     lr_scheduler_type: str = "cosine"
     optim: str = "paged_adamw_8bit"
-    per_device_train_batch_size: int = 1
-    gradient_accumulation_steps: int = 4 # Increase to 4 for smoother training
+    per_device_train_batch_size: int = 8
+    gradient_accumulation_steps: int = 2 # Increase to 4 for smoother training
     num_generations: int = 8 # Decrease if out of memory
     max_prompt_length: int = 1096
     max_steps: int = 250  # Set to 1000 for better results
     num_train_epochs: Optional[int] = None # Set to 1 for a full training run
     save_steps: int = 250
-    scale_reward: bool = True, # Dr. GRPO recommands False
+    # scale_rewards: bool = True, # Dr. GRPO recommands False
     max_grad_norm: float = 0.1
     
     # Reward functions to use (in order of application)
@@ -131,7 +131,7 @@ DEFAULT_CONFIGS = {
         max_steps=250
     ),
     
-    "v0_few_shot": TrainingConfig(
+    "v0_few_shot_chat": TrainingConfig(
         lora_name="v0_few_shot_chat",
         prompt_version="v0",
         few_shot=True,
@@ -145,6 +145,18 @@ DEFAULT_CONFIGS = {
         few_shot=True,
         k_shot=4,
         few_shot_template="combined",
+        max_steps=250
+    ),
+    "v1_few_shot_chat": TrainingConfig(
+        lora_name="v1_few_shot_chat",
+        prompt_version="v1",
+        few_shot=True,
+        max_steps=250
+    ),
+    "v2_few_shot_chat": TrainingConfig(
+        lora_name="v2_few_shot_chat",
+        prompt_version="v2",
+        few_shot=True,
         max_steps=250
     ),
 }

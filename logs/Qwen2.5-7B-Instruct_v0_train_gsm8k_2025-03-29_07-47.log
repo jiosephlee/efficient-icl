@@ -1,8 +1,0 @@
-2025-03-29 07:47:39,789 - INFO - Starting experiment: Qwen2.5-7B-Instruct_v0_train_gsm8k_2025-03-29_07-47
-2025-03-29 07:47:39,838 - INFO - Arguments: Namespace(model='Qwen/Qwen2.5-7B-Instruct', mode='train', lora_name='v0', dataset='gsm8k', checkpoint_for_continued_training=None)
-2025-03-29 07:47:39,838 - INFO - Using config: v0
-2025-03-29 07:47:39,838 - INFO - Using max_seq_length=2048, lora_rank=32
-2025-03-29 07:48:12,227 - INFO - Model loaded: Qwen/Qwen2.5-7B-Instruct
-2025-03-29 07:48:15,442 - INFO - PEFT model configured
-2025-03-29 07:48:15,442 - INFO - Loading gsm8k training dataset
-2025-03-29 07:48:16,441 - INFO - Dataset loaded with 7473 examples

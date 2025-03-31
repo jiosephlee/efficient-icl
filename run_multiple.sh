@@ -3,7 +3,6 @@
 # Define an array of model configurations
 # Each entry contains: MODEL_PATH MODEL_NAME LORA_NAME MODE
 declare -a MODELS=(
-    "Qwen/Qwen2.5-7B-Instruct Qwen2.5-7B-Instruct Base evaluate"
     "Qwen/Qwen2.5-7B-Instruct Qwen2.5-7B-Instruct v0 train"
     "Qwen/Qwen2.5-7B-Instruct Qwen2.5-7B-Instruct v0_few_shot train"
     "Qwen/Qwen2.5-7B-Instruct Qwen2.5-7B-Instruct v0_few_shot_combined train"

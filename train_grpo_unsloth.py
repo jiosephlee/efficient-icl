@@ -28,6 +28,13 @@ parser.add_argument("--checkpoint_for_continued_training", type=str, help="Path 
 
 args = parser.parse_args()
 
+# Track experiment
+import wandb
+wandb.login()
+import os
+os.environ["WANDB_PROJECT"]="GRPO_Few-Shot-Learning"
+
+
 # Get the training configuration based on lora_name
 CONFIG = get_config(args.lora_name)
 CONFIG.model_name = args.model
@@ -84,7 +91,9 @@ logger.info("PEFT model configured")
 
 if args.mode == "train" or args.mode == "continue" or args.mode == 'train_no_evaluate':
     logger.info(f"Loading {CONFIG.train_dataset} training dataset")
-    dataset = utils.get_dataset(CONFIG.train_dataset, "train", 
+    dataset = utils.get_dataset(CONFIG.train_dataset, 
+                                "train", 
+                                CONFIG.prompt_version,
                                 few_shot=CONFIG.few_shot, 
                                 k_shot=CONFIG.k_shot, 
                                 few_shot_template=CONFIG.few_shot_template)
@@ -110,7 +119,7 @@ if args.mode == "train" or args.mode == "continue" or args.mode == 'train_no_eva
         max_steps = CONFIG.max_steps,
         save_steps = CONFIG.save_steps,
         max_grad_norm = CONFIG.max_grad_norm,
-        scale_reward = CONFIG.scale_reward,
+        # scale_rewards = CONFIG.scale_rewards,
         report_to = "none", # Can use Weights & Biases
         output_dir = CONFIG.get_checkpoint_dir(),
     )
@@ -186,7 +195,11 @@ if args.mode != "train_no_evaluate":
     # Zero-shot evaluation
     if CONFIG.evaluate_zero_shot:
         logger.info("Running zero-shot evaluation")
-        test_dataset = utils.get_dataset(args.dataset, "test", few_shot=False, few_shot_template=CONFIG.few_shot_template)
+        test_dataset = utils.get_dataset(args.dataset, 
+                                         "test", 
+                                         CONFIG.prompt_version,
+                                         few_shot=False, 
+                                         few_shot_template=CONFIG.few_shot_template)
         logger.info(f"Test dataset loaded with {len(test_dataset)} examples")
 
         # Run evaluation with the model
@@ -216,7 +229,12 @@ if args.mode != "train_no_evaluate":
     # Few-shot evaluation
     if CONFIG.evaluate_few_shot:
         logger.info("Running few-shot evaluation")
-        test_dataset_few_shot = utils.get_dataset(args.dataset, "test", few_shot=True, k_shot=CONFIG.evaluation_k_shot, few_shot_template=CONFIG.few_shot_template)
+        test_dataset_few_shot = utils.get_dataset(args.dataset, 
+                                                  "test", 
+                                                  CONFIG.prompt_version,
+                                                  few_shot=True, 
+                                                  k_shot=CONFIG.evaluation_k_shot, 
+                                                  few_shot_template=CONFIG.few_shot_template)
         logger.info(f"Few-shot test dataset loaded with {len(test_dataset_few_shot)} examples")
 
         # Run few-shot evaluation with the model

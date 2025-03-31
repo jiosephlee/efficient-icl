@@ -26,10 +26,10 @@
   "target_modules": [
     "q_proj",
     "gate_proj",
-    "k_proj",
     "v_proj",
-    "down_proj",
     "o_proj",
+    "down_proj",
+    "k_proj",
     "up_proj"
   ],
   "task_type": "CAUSAL_LM",
