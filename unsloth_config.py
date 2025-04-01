@@ -49,13 +49,13 @@ class TrainingConfig:
     max_grad_norm: float = 0.1
     
     # Reward functions to use (in order of application)
-    reward_functions: List[str] = [
-    "xmlcount_reward_func",
-    "soft_format_reward_func", 
-    "strict_format_reward_func",
-    "int_reward_func",
-    "correctness_reward_func"
-    ]
+    reward_functions: List[str] = field(default_factory=lambda: [
+        "xmlcount_reward_func",
+        "soft_format_reward_func", 
+        "strict_format_reward_func",
+        "int_reward_func",
+        "correctness_reward_func"
+    ])
 
     # Inference parameters
     sampling_temperature: float = 0.8
@@ -157,7 +157,7 @@ DEFAULT_CONFIGS = {
     ),
     "v1_1_few_shot_chat": TrainingConfig(
         lora_name="v1_1_few_shot_chat",
-        dataset_name="gsm8k_hard",
+        train_dataset="gsm8k_hard",
         prompt_version="v1",
         few_shot=True,
         max_steps=300,
@@ -167,7 +167,7 @@ DEFAULT_CONFIGS = {
     ),
     "v1_2_few_shot_chat": TrainingConfig(
         lora_name="v1_2_few_shot_chat",
-        dataset_name="gsm8k_hard",
+        train_dataset="gsm8k_hard",
         prompt_version="v2",
         few_shot=True,
         max_steps=300,
@@ -177,17 +177,17 @@ DEFAULT_CONFIGS = {
     ),
     "v1_3_few_shot_chat": TrainingConfig(
         lora_name="v1_3_few_shot_chat",
-        dataset_name="gsm8k_hard",
+        train_dataset="gsm8k_hard",
         prompt_version="v3",
         few_shot=True,
         max_steps=300,
         num_generations=12,
         per_device_train_batch_size=12,
         gradient_accumulation_steps=4,
-        reward_functions= [
-        "int_reward_func",
-        "correctness_reward_func"
-        ]
+        reward_functions=field(default_factory=lambda: [
+            "int_reward_func",
+            "correctness_reward_func"
+        ])
     ),
 }
 
