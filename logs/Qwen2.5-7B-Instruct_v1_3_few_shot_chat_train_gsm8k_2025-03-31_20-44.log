@@ -1,12 +1,12 @@
-2025-03-31 08:59:15,768 - INFO - Starting experiment: Qwen2.5-7B-Instruct_v1_3_few_shot_chat_train_gsm8k_2025-03-31_08-59
-2025-03-31 08:59:15,768 - INFO - Arguments: Namespace(model='Qwen/Qwen2.5-7B-Instruct', mode='train', lora_name='v1_3_few_shot_chat', dataset='gsm8k', checkpoint_for_continued_training=None, eval_zero_shot=True, eval_few_shot=True, eval_few_shot_train=False, eval_k_shot=4)
-2025-03-31 08:59:15,768 - INFO - Using config: v1_3_few_shot_chat
-2025-03-31 08:59:15,768 - INFO - Using max_seq_length=2048, lora_rank=32
-2025-03-31 08:59:50,247 - INFO - Model loaded: Qwen/Qwen2.5-7B-Instruct
-2025-03-31 08:59:53,672 - INFO - PEFT model configured
-2025-03-31 08:59:53,672 - INFO - Loading gsm8k training dataset
-2025-03-31 08:59:55,798 - INFO - Dataset loaded with 7473 examples
-2025-03-31 08:59:55,838 - INFO - Training configuration: UnslothGRPOConfig(
+2025-03-31 20:44:29,056 - INFO - Starting experiment: Qwen2.5-7B-Instruct_v1_3_few_shot_chat_train_gsm8k_2025-03-31_20-44
+2025-03-31 20:44:29,056 - INFO - Arguments: Namespace(model='Qwen/Qwen2.5-7B-Instruct', mode='train', lora_name='v1_3_few_shot_chat', dataset='gsm8k', checkpoint_for_continued_training=None, eval_zero_shot=True, eval_few_shot=True, eval_few_shot_train=False, eval_k_shot=4)
+2025-03-31 20:44:29,056 - INFO - Using config: v1_3_few_shot_chat
+2025-03-31 20:44:29,056 - INFO - Using max_seq_length=2048, lora_rank=32
+2025-03-31 20:45:03,361 - INFO - Model loaded: Qwen/Qwen2.5-7B-Instruct
+2025-03-31 20:45:06,774 - INFO - PEFT model configured
+2025-03-31 20:45:06,774 - INFO - Loading gsm8k_hard training dataset
+2025-03-31 20:45:07,986 - INFO - Dataset loaded with 472 examples
+2025-03-31 20:45:08,045 - INFO - Training configuration: UnslothGRPOConfig(
 _n_gpu=1,
 accelerator_config={'split_batches': False, 'dispatch_batches': None, 'even_batches': True, 'use_seedable_sampler': True, 'non_blocking': False, 'gradient_accumulation_kwargs': None, 'use_configured_state': False},
 adafactor=False,
@@ -82,7 +82,7 @@ log_completions=False,
 log_level=passive,
 log_level_replica=warning,
 log_on_each_node=True,
-logging_dir=./checkpoints/Qwen2.5-7B-Instruct/v1_3_few_shot_chat/runs/Mar31_08-59-55_ShenLab,
+logging_dir=./checkpoints/Qwen2.5-7B-Instruct/v1_3_few_shot_chat/runs/Mar31_20-45-07_ShenLab,
 logging_first_step=False,
 logging_nan_inf_filter=False,
 logging_steps=1,
@@ -158,4 +158,4 @@ warmup_ratio=0.1,
 warmup_steps=0,
 weight_decay=0.1,
 )
-2025-03-31 08:59:55,965 - INFO - Closing mailbox, abandoning 0 handles.
+2025-03-31 20:45:08,084 - INFO - Starting training

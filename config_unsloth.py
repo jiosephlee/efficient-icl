@@ -184,10 +184,10 @@ DEFAULT_CONFIGS = {
         num_generations=12,
         per_device_train_batch_size=12,
         gradient_accumulation_steps=4,
-        reward_functions=field(default_factory=lambda: [
-            "int_reward_func",
-            "correctness_reward_func"
-        ])
+        reward_functions=[
+        "int_reward_func",
+        "correctness_reward_func"
+    ]
     ),
 }
 

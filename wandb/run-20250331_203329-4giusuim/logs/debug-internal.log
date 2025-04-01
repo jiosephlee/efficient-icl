@@ -1,0 +1,7 @@
+{"time":"2025-03-31T20:33:29.034974193-04:00","level":"INFO","msg":"stream: starting","core version":"0.19.8","symlink path":"/home/josephL/efficient-icl/wandb/run-20250331_203329-4giusuim/logs/debug-core.log"}
+{"time":"2025-03-31T20:33:29.140164679-04:00","level":"INFO","msg":"created new stream","id":"4giusuim"}
+{"time":"2025-03-31T20:33:29.140232239-04:00","level":"INFO","msg":"stream: started","id":"4giusuim"}
+{"time":"2025-03-31T20:33:29.14025675-04:00","level":"INFO","msg":"writer: Do: started","stream_id":"4giusuim"}
+{"time":"2025-03-31T20:33:29.14029361-04:00","level":"INFO","msg":"sender: started","stream_id":"4giusuim"}
+{"time":"2025-03-31T20:33:29.14033361-04:00","level":"INFO","msg":"handler: started","stream_id":"4giusuim"}
+{"time":"2025-03-31T20:33:29.305077323-04:00","level":"INFO","msg":"Starting system monitor"}

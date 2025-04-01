@@ -13,7 +13,7 @@ import datetime
 import logging
 import utils
 import rewards
-from unsloth_config import get_config, TrainingConfig
+from config_unsloth import get_config, TrainingConfig
 
 # Parse command line arguments
 parser = argparse.ArgumentParser(description="GRPO training and evaluation script")
@@ -130,6 +130,7 @@ if args.mode == "train" or args.mode == "continue" or args.mode == 'train_no_eva
     logger.info(f"Training configuration: {training_args}")
 
     # Create reward functions list from config
+    print(type(CONFIG.reward_functions))
     reward_funcs = []
     for func_name in CONFIG.reward_functions:
         if hasattr(rewards, func_name):

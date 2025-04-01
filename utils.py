@@ -113,7 +113,7 @@ def get_gsm8k_questions(split = "train", prompt_version = "v0", few_shot=False, 
     if hard and split == "train":
         import json
         try:
-            with open("gsm8k_results.json", "r") as f:
+            with open("./models/Qwen2.5-7B-Instruct/Base/gsm8k_train_4-shot-chat_v0_2025-03-31_03-59_results.json", "r") as f:
                 results = json.load(f)
                 # Extract questions that were incorrectly answered
                 hard_questions = [item["question"] for item in results["detailed_results"] if not item["is_correct"]]
