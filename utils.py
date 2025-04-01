@@ -106,8 +106,22 @@ def compare_str_numbers(x,y):
     is_correct = abs(model_float - truth_float) < 1e-8  # Account for floating point precision
     return is_correct 
 
-def get_gsm8k_questions(split = "train", prompt_version = "v0", few_shot=False, k_shot=4, few_shot_template="chat") -> Dataset:
+def get_gsm8k_questions(split = "train", prompt_version = "v0", few_shot=False, k_shot=4, few_shot_template="chat", hard=False) -> Dataset:
     data = load_dataset('openai/gsm8k', 'main')[split] # type: ignore
+    
+    # Filter for hard questions if requested
+    if hard and split == "train":
+        import json
+        try:
+            with open("gsm8k_results.json", "r") as f:
+                results = json.load(f)
+                # Extract questions that were incorrectly answered
+                hard_questions = [item["question"] for item in results["detailed_results"] if not item["is_correct"]]
+                # Filter the dataset to only include hard questions
+                data = data.filter(lambda x: x["question"] in hard_questions) # type: ignore
+        except (FileNotFoundError, json.JSONDecodeError, KeyError) as e:
+            print(f"Warning: Could not load hard questions filter: {e}")
+    
     SYSTEM_PROMPT = PROMPTS[prompt_version]["SYSTEM_PROMPT"]
     XML_COT_FORMAT = PROMPTS[prompt_version]["XML_COT_FORMAT"]
     if few_shot:
@@ -173,6 +187,8 @@ def get_gsm8k_questions(split = "train", prompt_version = "v0", few_shot=False, 
 def get_dataset(dataset_name, split="train", prompt_version = "v0", few_shot=False, k_shot=4, few_shot_template="chat"):
     if dataset_name == "gsm8k":
         return get_gsm8k_questions(split, prompt_version, few_shot, k_shot, few_shot_template)
+    if dataset_name == "gsm8k_hard":
+        return get_gsm8k_questions(split, prompt_version, few_shot, k_shot, few_shot_template, hard=True)
     else:
         raise ValueError(f"Dataset {dataset_name} not supported")
 
