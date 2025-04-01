@@ -223,9 +223,9 @@ if args.mode != "train_no_evaluate":
         os.makedirs(results_dir, exist_ok=True)
 
         # Save detailed results to file in the model-specific directory
-        results_filename = f"./{results_dir}/{args.dataset}_train_few_shot_{timestamp}_results.json"
+        results_filename = f"./{results_dir}/{args.dataset}_train_4-shot_{timestamp}_results.json"
         if 'Base' in results_dir:
-            results_filename = f"./{results_dir}/{args.dataset}_train_few_shot_{CONFIG.prompt_version}_{timestamp}_results.json"
+            results_filename = f"./{results_dir}/{args.dataset}_train_4-shot-{CONFIG.few_shot_template}_{CONFIG.prompt_version}_{timestamp}_results.json"
         with open(results_filename, "w") as f:
             json.dump(results, f, indent=2)
         logger.info(f"Training Few-Shot detailed results saved to {results_filename}")
@@ -292,6 +292,8 @@ if args.mode != "train_no_evaluate":
 
         # Save few-shot detailed results
         few_shot_results_filename = f"./{results_dir}/{args.dataset}_{args.eval_k_shot}-shot_{timestamp}_results.json"
+        if 'Base' in results_dir:
+            few_shot_results_filename = f"./{results_dir}/{args.dataset}_{args.eval_k_shot}-shot_{CONFIG.prompt_version}_{timestamp}_results.json"
         with open(few_shot_results_filename, "w") as f:
             json.dump(few_shot_results, f, indent=2)
         logger.info(f"Few-shot detailed results saved to {few_shot_results_filename}")
