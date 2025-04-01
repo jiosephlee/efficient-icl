@@ -3,11 +3,14 @@
 # Define an array of model configurations
 # Each entry contains: MODEL_PATH MODEL_NAME LORA_NAME MODE [ADDITIONAL_FLAGS]
 declare -a MODELS=(
-    "Qwen/Qwen2.5-7B-Instruct Qwen2.5-7B-Instruct v1_few_shot_chat train --eval_zero_shot --eval_few_shot --eval_k_shot 4"
-    "Qwen/Qwen2.5-7B-Instruct Qwen2.5-7B-Instruct v2_few_shot_chat train --eval_zero_shot --eval_few_shot --eval_k_shot 4"
+    "Qwen/Qwen2.5-7B-Instruct Qwen2.5-7B-Instruct Base evaluate --eval_few_shot_train"
+    "Qwen/Qwen2.5-7B-Instruct Qwen2.5-7B-Instruct v1_3_few_shot_chat train --eval_zero_shot --eval_few_shot --eval_k_shot 4"
+    "Qwen/Qwen2.5-7B-Instruct Qwen2.5-7B-Instruct v1_2_few_shot_chat train --eval_zero_shot --eval_few_shot --eval_k_shot 4"
+    "Qwen/Qwen2.5-7B-Instruct Qwen2.5-7B-Instruct v1_1_few_shot_chat train --eval_zero_shot --eval_few_shot --eval_k_shot 4"
     "Qwen/Qwen2.5-7B-Instruct Qwen2.5-7B-Instruct Base_v1 evaluate --eval_few_shot --eval_k_shot 4"
     "Qwen/Qwen2.5-7B-Instruct Qwen2.5-7B-Instruct Base_v2 evaluate --eval_few_shot --eval_k_shot 4"
-)
+    "Qwen/Qwen2.5-7B-Instruct Qwen2.5-7B-Instruct Base_v3 evaluate --eval_few_shot --eval_k_shot 4"
+    )
 
 DATASET="gsm8k"
 DATE=$(date +"%Y-%m-%d_%H_%M")

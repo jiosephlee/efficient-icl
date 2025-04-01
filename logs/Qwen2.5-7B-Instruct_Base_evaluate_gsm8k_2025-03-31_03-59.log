@@ -1,0 +1,15 @@
+2025-03-31 03:59:31,757 - INFO - Starting experiment: Qwen2.5-7B-Instruct_Base_evaluate_gsm8k_2025-03-31_03-59
+2025-03-31 03:59:31,757 - INFO - Arguments: Namespace(model='Qwen/Qwen2.5-7B-Instruct', mode='evaluate', lora_name='Base', dataset='gsm8k', checkpoint_for_continued_training=None, eval_zero_shot=False, eval_few_shot=False, eval_few_shot_train=True, eval_k_shot=4)
+2025-03-31 03:59:31,757 - INFO - Using config: Base
+2025-03-31 03:59:31,757 - INFO - Using max_seq_length=2048, lora_rank=32
+2025-03-31 04:00:05,092 - INFO - Model loaded: Qwen/Qwen2.5-7B-Instruct
+2025-03-31 04:00:08,543 - INFO - PEFT model configured
+2025-03-31 04:00:08,544 - INFO - Loading gsm8k test dataset for evaluation
+2025-03-31 04:00:08,544 - INFO - Running few-shot evaluation on training data.
+2025-03-31 04:00:11,090 - INFO - Train dataset loaded with 7473 examples
+2025-03-31 04:00:11,090 - INFO - Starting training evaluation
+2025-03-31 04:00:11,090 - INFO - Using the lora adapter: Base
+2025-03-31 08:59:05,650 - INFO - Training Few-Shot detailed results saved to ././models/Qwen2.5-7B-Instruct/Base//gsm8k_train_few_shot_v0_2025-03-31_03-59_results.json
+2025-03-31 08:59:05,676 - INFO - Training Few-shot Accuracy: 0.94%
+2025-03-31 08:59:05,676 - INFO - Experiment completed. Log saved to ./logs/Qwen2.5-7B-Instruct_Base_evaluate_gsm8k_2025-03-31_03-59.log
+2025-03-31 08:59:06,077 - INFO - Closing mailbox, abandoning 0 handles.

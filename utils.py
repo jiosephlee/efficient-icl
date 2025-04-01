@@ -25,10 +25,9 @@ Respond in the following format:
 {answer}
 </answer>
 """,
-    "FEW_SHOT_INSTRUCTION":"""Now, solve the following problem"""
     },
     "v1": {
-        "SYSTEM_PROMPT": """
+        "SYSTEM_PROMPT": """Let's think step by step.
 Respond in the following format:
 <think>
 ...
@@ -45,10 +44,9 @@ Respond in the following format:
 {answer}
 </answer>
 """,
-    "FEW_SHOT_INSTRUCTION":"""Now, solve the following problem. Let's think step by step"""
     },
     "v2": {
-        "SYSTEM_PROMPT": """
+        "SYSTEM_PROMPT": """First, understand the problem and analyze any of the provided demonstrations if they're relevant. Then, solve the problem step by step.
 Respond in the following format:
 <think>
 ...
@@ -65,7 +63,14 @@ Respond in the following format:
 {answer}
 </answer>
 """,
-    "FEW_SHOT_INSTRUCTION":"""Now, solve the following problem. Understand the problem first and analyze any of the examples if they're relevant. Then, solve it step by step"""
+    },
+    "v3": {
+        "SYSTEM_PROMPT": """First, understand the problem and analyze any of the provided demonstrations if they're relevant. Then, solve the problem step by step.""",
+        "XML_COT_FORMAT": """\
+{reasoning}
+####
+{answer}
+""",
     }
 }
 
@@ -105,7 +110,6 @@ def get_gsm8k_questions(split = "train", prompt_version = "v0", few_shot=False, 
     data = load_dataset('openai/gsm8k', 'main')[split] # type: ignore
     SYSTEM_PROMPT = PROMPTS[prompt_version]["SYSTEM_PROMPT"]
     XML_COT_FORMAT = PROMPTS[prompt_version]["XML_COT_FORMAT"]
-    FEW_SHOT_INSTRUCTION = PROMPTS[prompt_version]['FEW_SHOT_INSTRUCTION']
     if few_shot:
         # Get k random examples from training set for few-shot learning
         train_data = load_dataset('openai/gsm8k', 'main')["train"] # type: ignore
@@ -125,7 +129,7 @@ def get_gsm8k_questions(split = "train", prompt_version = "v0", few_shot=False, 
                 few_shot_prompt += "\n\n"
             
             # Add separator before the actual question
-            few_shot_prompt += f"{FEW_SHOT_INSTRUCTION}:\n\nQuestion: "
+            few_shot_prompt += f"Now, answer this problem.\n\nQuestion: "
             
             # Process the data with combined few-shot examples
             data = data.map(lambda x: { # type: ignore

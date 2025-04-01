@@ -6,11 +6,11 @@ def correctness_reward_func(prompts, completions, answer, debug=True, **kwargs) 
     responses = [completion[0]['content'] for completion in completions]
     q = prompts[0][-1]['content']
     extracted_responses = [utils.extract_xml_answer(r) for r in responses]
-    print('-'*20, f"Question:\n{q}", f"\nAnswer:\n{answer[0]}", f"\nResponse:\n{responses[0]}", f"\nExtracted:\n{extracted_responses[0]}")
+    print('-'*20, f"Prompt:\n{prompts[0]}", f"\nAnswer:\n{answer[0]}", f"\nResponse 0:\n{responses[0]}", f"\nResponse 1:\n{responses[1]}" f"\nExtracted Responses:\n{extracted_responses}")
     if debug:
         print(prompts)
-        print(completions)
-        print(answer)
+        # print(completions)
+        # print(answer)
     return [2.0 if r == a else 0.0 for r, a in zip(extracted_responses, answer)]
 
 def int_reward_func(completions, **kwargs) -> list[float]:

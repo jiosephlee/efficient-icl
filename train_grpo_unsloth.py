@@ -27,13 +27,14 @@ parser.add_argument("--dataset", type=str, default="gsm8k",
 parser.add_argument("--checkpoint_for_continued_training", type=str, help="Path to checkpoint for continuing training")
 parser.add_argument("--eval_zero_shot", action="store_true", help="Whether to evaluate in zero-shot setting")
 parser.add_argument("--eval_few_shot", action="store_true", help="Whether to evaluate in few-shot setting")
+parser.add_argument("--eval_few_shot_train", action="store_true", help="Whether to evaluate in train few-shot setting")
 parser.add_argument("--eval_k_shot", type=int, default=4, help="Number of examples to use for few-shot evaluation")
 
 args = parser.parse_args()
 
 # Track experiment
 import wandb
-wandb.login()
+wandb.login(key='d385cbc08ef0c734e84aff78ce2bb293b07f34e0')
 import os
 os.environ["WANDB_PROJECT"]="GRPO_Few-Shot-Learning"
 
@@ -195,6 +196,43 @@ if args.mode != "train_no_evaluate":
     # Evaluation mode (runs for both train and evaluate modes)
     logger.info(f"Loading {args.dataset} test dataset for evaluation")
     
+    # Few-Shot Train evaluation
+    if args.eval_few_shot_train:
+        logger.info("Running few-shot evaluation on training data.")
+        test_dataset = utils.get_dataset(args.dataset, 
+                                         "train", 
+                                         CONFIG.prompt_version,
+                                         few_shot=True, 
+                                         k_shot=4,
+                                         few_shot_template=CONFIG.few_shot_template)
+        logger.info(f"Train dataset loaded with {len(test_dataset)} examples")
+
+        # Run evaluation with the model
+        logger.info("Starting training evaluation")
+        lora_path = CONFIG.get_model_dir() if args.mode == "evaluate" else (lora_file_path if 'lora_file_path' in locals() else args.lora_name)
+        logger.info(f"Using the lora adapter: {'Base' if args.lora_name == 'Base' else lora_path}")
+        results = utils.evaluate_model(
+            model, 
+            test_dataset, 
+            tokenizer, 
+            lora_path=None if args.lora_name == 'Base' else lora_path,
+        )
+
+        # Create directory for results if it doesn't exist
+        results_dir = CONFIG.get_model_dir()
+        os.makedirs(results_dir, exist_ok=True)
+
+        # Save detailed results to file in the model-specific directory
+        results_filename = f"./{results_dir}/{args.dataset}_train_few_shot_{timestamp}_results.json"
+        if 'Base' in results_dir:
+            results_filename = f"./{results_dir}/{args.dataset}_train_few_shot_{CONFIG.prompt_version}_{timestamp}_results.json"
+        with open(results_filename, "w") as f:
+            json.dump(results, f, indent=2)
+        logger.info(f"Training Few-Shot detailed results saved to {results_filename}")
+
+        utils.analyze_errors(results)
+        logger.info(f"Training Few-shot Accuracy: {results['accuracy']:.2f}%")
+        
     # Zero-shot evaluation
     if args.eval_zero_shot:
         logger.info("Running zero-shot evaluation")
@@ -222,6 +260,8 @@ if args.mode != "train_no_evaluate":
 
         # Save detailed results to file in the model-specific directory
         results_filename = f"./{results_dir}/{args.dataset}_zeroshot_{timestamp}_results.json"
+        if 'Base' in results_dir:
+            results_filename = f"./{results_dir}/{args.dataset}_zeroshot_{CONFIG.prompt_version}_{timestamp}_results.json"
         with open(results_filename, "w") as f:
             json.dump(results, f, indent=2)
         logger.info(f"Zero-shot detailed results saved to {results_filename}")
