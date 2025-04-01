@@ -157,6 +157,7 @@ DEFAULT_CONFIGS = {
     ),
     "v1_1_few_shot_chat": TrainingConfig(
         lora_name="v1_1_few_shot_chat",
+        dataset_name="gsm8k_hard",
         prompt_version="v1",
         few_shot=True,
         max_steps=300,
@@ -166,6 +167,7 @@ DEFAULT_CONFIGS = {
     ),
     "v1_2_few_shot_chat": TrainingConfig(
         lora_name="v1_2_few_shot_chat",
+        dataset_name="gsm8k_hard",
         prompt_version="v2",
         few_shot=True,
         max_steps=300,
@@ -175,16 +177,17 @@ DEFAULT_CONFIGS = {
     ),
     "v1_3_few_shot_chat": TrainingConfig(
         lora_name="v1_3_few_shot_chat",
+        dataset_name="gsm8k_hard",
         prompt_version="v3",
         few_shot=True,
         max_steps=300,
         num_generations=12,
         per_device_train_batch_size=12,
         gradient_accumulation_steps=4,
-        reward_functions=field(default_factory=lambda: [
+        reward_functions= [
         "int_reward_func",
         "correctness_reward_func"
-        ])
+        ]
     ),
 }
 
