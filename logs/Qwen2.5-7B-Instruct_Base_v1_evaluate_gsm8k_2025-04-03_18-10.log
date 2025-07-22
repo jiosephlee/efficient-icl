@@ -1,0 +1,11 @@
+2025-04-03 18:10:54,878 - INFO - Starting experiment: Qwen2.5-7B-Instruct_Base_v1_evaluate_gsm8k_2025-04-03_18-10
+2025-04-03 18:10:54,879 - INFO - Arguments: Namespace(model='Qwen/Qwen2.5-7B-Instruct', mode='evaluate', lora_name='Base_v1', dataset='gsm8k', checkpoint_for_continued_training=None, eval_zero_shot=False, eval_few_shot=True, eval_few_shot_train=False, eval_k_shot=4)
+2025-04-03 18:10:54,879 - INFO - Using config: Base
+2025-04-03 18:10:54,879 - INFO - Using max_seq_length=2048, lora_rank=32
+2025-04-03 18:11:31,898 - INFO - Model loaded: Qwen/Qwen2.5-7B-Instruct
+2025-04-03 18:11:35,359 - INFO - PEFT model configured
+2025-04-03 18:11:35,359 - INFO - Loading gsm8k test dataset for evaluation
+2025-04-03 18:11:35,359 - INFO - Running few-shot evaluation
+2025-04-03 18:11:36,919 - INFO - Few-shot test dataset loaded with 1319 examples
+2025-04-03 18:11:36,919 - INFO - Starting few-shot evaluation
+2025-04-03 19:06:07,679 - INFO - Closing mailbox, abandoning 0 handles.

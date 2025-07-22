@@ -1,0 +1,21 @@
+{"time":"2025-04-02T18:01:05.373194873-04:00","level":"INFO","msg":"stream: starting","core version":"0.19.8","symlink path":"/home/josephL/efficient-icl/wandb/run-20250402_180105-iz3bfle7/logs/debug-core.log"}
+{"time":"2025-04-02T18:01:05.477732151-04:00","level":"INFO","msg":"created new stream","id":"iz3bfle7"}
+{"time":"2025-04-02T18:01:05.477762471-04:00","level":"INFO","msg":"stream: started","id":"iz3bfle7"}
+{"time":"2025-04-02T18:01:05.47781938-04:00","level":"INFO","msg":"writer: Do: started","stream_id":"iz3bfle7"}
+{"time":"2025-04-02T18:01:05.47787026-04:00","level":"INFO","msg":"sender: started","stream_id":"iz3bfle7"}
+{"time":"2025-04-02T18:01:05.4778295-04:00","level":"INFO","msg":"handler: started","stream_id":"iz3bfle7"}
+{"time":"2025-04-02T18:01:06.026040419-04:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2025-04-02T18:44:51.41459226-04:00","level":"INFO","msg":"api: retrying HTTP error","status":502,"url":"https://api.wandb.ai/files/upenn-ml/GRPO_Few-Shot-Learning/iz3bfle7/file_stream","body":"\n<html><head>\n<meta http-equiv=\"content-type\" content=\"text/html;charset=utf-8\">\n<title>502 Server Error</title>\n</head>\n<body text=#000000 bgcolor=#ffffff>\n<h1>Error: Server Error</h1>\n<h2>The server encountered a temporary error and could not complete your request.<p>Please try again in 30 seconds.</h2>\n<h2></h2>\n</body></html>\n"}
+{"time":"2025-04-02T20:04:06.170299666-04:00","level":"INFO","msg":"api: retrying error","error":"Post \"https://api.wandb.ai/graphql\": context deadline exceeded"}
+{"time":"2025-04-02T20:04:38.275790445-04:00","level":"INFO","msg":"api: retrying error","error":"Post \"https://api.wandb.ai/graphql\": context deadline exceeded"}
+{"time":"2025-04-02T20:05:12.6285156-04:00","level":"INFO","msg":"api: retrying error","error":"Post \"https://api.wandb.ai/graphql\": net/http: request canceled (Client.Timeout exceeded while awaiting headers)"}
+{"time":"2025-04-02T20:05:24.203242009-04:00","level":"INFO","msg":"api: retrying error","error":"Post \"https://api.wandb.ai/files/upenn-ml/GRPO_Few-Shot-Learning/iz3bfle7/file_stream\": EOF"}
+{"time":"2025-04-02T22:45:06.229115937-04:00","level":"INFO","msg":"api: retrying error","error":"Post \"https://api.wandb.ai/graphql\": context deadline exceeded"}
+{"time":"2025-04-03T05:51:10.671387917-04:00","level":"INFO","msg":"stream: closing","id":"iz3bfle7"}
+{"time":"2025-04-03T05:51:10.671604469-04:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2025-04-03T05:51:10.672266707-04:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2025-04-03T05:51:11.733786587-04:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2025-04-03T05:51:11.867321151-04:00","level":"INFO","msg":"handler: closed","stream_id":"iz3bfle7"}
+{"time":"2025-04-03T05:51:11.867354481-04:00","level":"INFO","msg":"sender: closed","stream_id":"iz3bfle7"}
+{"time":"2025-04-03T05:51:11.867354471-04:00","level":"INFO","msg":"writer: Close: closed","stream_id":"iz3bfle7"}
+{"time":"2025-04-03T05:51:11.867457412-04:00","level":"INFO","msg":"stream: closed","id":"iz3bfle7"}

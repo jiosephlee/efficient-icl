@@ -1,0 +1,20 @@
+2025-04-02 14:53:19,259 - INFO - Starting experiment: Qwen2.5-7B-Instruct_v1_3_few_shot_chat_evaluate_gsm8k_2025-04-02_14-53
+2025-04-02 14:53:19,259 - INFO - Arguments: Namespace(model='Qwen/Qwen2.5-7B-Instruct', mode='evaluate', lora_name='v1_3_few_shot_chat', dataset='gsm8k', checkpoint_for_continued_training=None, eval_zero_shot=True, eval_few_shot=True, eval_few_shot_train=False, eval_k_shot=4)
+2025-04-02 14:53:19,259 - INFO - Using config: v1_3_few_shot_chat
+2025-04-02 14:53:19,259 - INFO - Using max_seq_length=2048, lora_rank=32
+2025-04-02 14:53:55,930 - INFO - Model loaded: Qwen/Qwen2.5-7B-Instruct
+2025-04-02 14:53:59,265 - INFO - PEFT model configured
+2025-04-02 14:53:59,265 - INFO - Loading gsm8k test dataset for evaluation
+2025-04-02 14:53:59,265 - INFO - Running zero-shot evaluation
+2025-04-02 14:54:00,317 - INFO - Test dataset loaded with 1319 examples
+2025-04-02 14:54:00,317 - INFO - Starting zero-shot evaluation
+2025-04-02 14:54:00,317 - INFO - Using the lora adapter: ./models/Qwen2.5-7B-Instruct/v1_3_few_shot_chat/
+2025-04-02 16:27:58,276 - INFO - Zero-shot detailed results saved to ././models/Qwen2.5-7B-Instruct/v1_3_few_shot_chat//gsm8k_zeroshot_2025-04-02_14-53_results.json
+2025-04-02 16:27:58,276 - INFO - Zero-shot Accuracy: 0.87%
+2025-04-02 16:27:58,276 - INFO - Running few-shot evaluation
+2025-04-02 16:28:00,554 - INFO - Few-shot test dataset loaded with 1319 examples
+2025-04-02 16:28:00,554 - INFO - Starting few-shot evaluation
+2025-04-02 18:00:08,848 - INFO - Few-shot detailed results saved to ././models/Qwen2.5-7B-Instruct/v1_3_few_shot_chat//gsm8k_4-shot_2025-04-02_14-53_results.json
+2025-04-02 18:00:08,848 - INFO - Few-shot Accuracy: 0.87%
+2025-04-02 18:00:08,848 - INFO - Experiment completed. Log saved to ./logs/Qwen2.5-7B-Instruct_v1_3_few_shot_chat_evaluate_gsm8k_2025-04-02_14-53.log
+2025-04-02 18:00:08,891 - INFO - Closing mailbox, abandoning 0 handles.

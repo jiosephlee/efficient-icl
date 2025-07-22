@@ -159,3 +159,5 @@ warmup_steps=0,
 weight_decay=0.1,
 )
 2025-03-31 20:45:08,084 - INFO - Starting training
+2025-04-01 08:04:30,564 - INFO - Training completed
+2025-04-01 08:04:30,564 - INFO - Saving LoRA adapter to ./models/Qwen2.5-7B-Instruct/v1_3_few_shot_chat/

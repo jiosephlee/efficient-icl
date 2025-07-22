@@ -189,6 +189,21 @@ DEFAULT_CONFIGS = {
         "correctness_reward_func"
     ]
     ),
+    "v1_4_few_shot_chat": TrainingConfig(
+        lora_name="v1_3_few_shot_chat",
+        train_dataset="gsm8k_hard",
+        prompt_version="v3",
+        few_shot=True,
+        max_steps=300,
+        num_generations=12,
+        per_device_train_batch_size=12,
+        gradient_accumulation_steps=4,
+        reward_functions=[
+        "int_reward_func",
+        "correctness_reward_func"
+    ]
+        # Using GPT-4o-mini to extract the correct response; how much does correctness matter?
+    ),
 }
 
 

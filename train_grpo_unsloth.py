@@ -165,34 +165,6 @@ if args.mode == "train" or args.mode == "continue" or args.mode == 'train_no_eva
     logger.info(f"Saving LoRA adapter to {lora_file_path}")
     model.save_lora(lora_file_path)
 
-    # Model sample output
-    text = tokenizer.apply_chat_template([
-        {"role" : "system", "content" : utils.SYSTEM_PROMPT},
-        {"role" : "user", "content" : "Calculate pi."},
-    ], tokenize = False, add_generation_prompt = True)
-
-    sampling_params = SamplingParams(
-        temperature = CONFIG.sampling_temperature,
-        top_p = CONFIG.sampling_top_p,
-        max_tokens = CONFIG.max_tokens,
-    )
-    output = model.fast_generate(
-        text,
-        sampling_params = sampling_params,
-        lora_request = None,
-    )[0].outputs[0].text
-    logger.info("Output without LoRA:")
-    logger.info(output)
-    
-    output = model.fast_generate(
-        text,
-        sampling_params = sampling_params,
-        lora_request = model.load_lora(lora_file_path),
-    )[0].outputs[0].text
-
-    logger.info("Output with LoRA:")
-    logger.info(output)
-
 if args.mode != "train_no_evaluate":
     # Evaluation mode (runs for both train and evaluate modes)
     logger.info(f"Loading {args.dataset} test dataset for evaluation")
